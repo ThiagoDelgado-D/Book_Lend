@@ -1,0 +1,15 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🔄 Installing dependencies..."
+yarn install --frozen-lockfile
+
+echo "🔍 Running comprehensive verification..."
+yarn verify
+if [ $? -ne 0 ]; then
+  echo "❌ Verification failed. Push aborted."
+  echo "Please fix the issues above before pushing."
+  exit 1
+fi
+
+echo "✅ All verifications passed. Push proceeding..."

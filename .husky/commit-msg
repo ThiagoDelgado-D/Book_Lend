@@ -1,0 +1,26 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "📝 Validating commit message format..."
+
+# Read the commit message
+commit_message=$(cat $1)
+
+# Check if commit message follows conventional commits format
+if ! echo "$commit_message" | grep -qE "^(feat|fix|docs|style|refactor|test|chore|ci|build|perf|revert)(\(.+\))?: .{1,50}"; then
+  echo "❌ Invalid commit message format!"
+  echo ""
+  echo "Please use conventional commits format:"
+  echo "  type(scope): description"
+  echo ""
+  echo "Examples:"
+  echo "  feat: add user authentication"
+  echo "  fix(api): handle null response"
+  echo "  docs: update README"
+  echo "  test: add unit tests for Book entity"
+  echo ""
+  echo "Types: feat, fix, docs, style, refactor, test, chore, ci, build, perf, revert"
+  exit 1
+fi
+
+echo "✅ Commit message format is valid."
