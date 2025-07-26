@@ -1,4 +1,4 @@
-import type { UUID } from 'src/types/uuid';
+import { UUID } from '../types/uuid';
 
 export interface CryptoService {
   hashPassword(password: string): Promise<string>;
