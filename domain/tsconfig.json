@@ -5,6 +5,6 @@
     "rootDir": ".",
     "baseUrl": "."
   },
-  "include": ["src/**/*", "entities/**/*", "repositories/**/*", "use-cases/**/*"],
+  "include": ["src/**/*", "entities/**/*", "repositories/**/*", "src/use-cases/**/*"],
   "exclude": ["dist", "**/*.test.ts", "**/*.spec.ts"]
 }
