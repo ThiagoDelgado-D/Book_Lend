@@ -23,10 +23,7 @@
     "resolveJsonModule": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "baseUrl": ".",
-    "paths": {
-      "domain/*": ["domain/src/*"]
-    }
+    "baseUrl": "."
   },
   "include": ["domain/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]

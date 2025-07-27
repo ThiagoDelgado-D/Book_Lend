@@ -1,11 +1,12 @@
-import { Book } from '../entities/book.js';
-import { UUID } from '../types/uuid.js';
+import { Book, BookStatus } from '../entities';
+import { UUID } from '../types/uuid';
 
-export interface BookServices {
+export interface BookService {
   findById(id: UUID): Promise<Book | null>;
-  findByIsbn(isbn: UUID): Promise<Book | null>;
-  findAvailableBooks(): Promise<Book[]>;
-  save(book: Book): Promise<void>;
-  update(book: Book): Promise<void>;
+  findByTitle(title: string): Promise<Book[]>;
+  findByIsbn(isbn: string): Promise<Book | null>;
+  findByStatus(status: BookStatus): Promise<Book[]>;
+  findPopularBooks(): Promise<Book[]>;
+  save(book: Book): Promise<Book>;
   delete(id: UUID): Promise<void>;
 }

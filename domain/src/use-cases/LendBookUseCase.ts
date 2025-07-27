@@ -1,5 +1,5 @@
 import { BookStatus } from '../entities';
-import { BookServices } from '../services/book-service';
+import { BookService } from '../services/book-service';
 import { UUID } from '../types/uuid';
 
 export interface LendBookRequestModel {
@@ -13,7 +13,7 @@ export interface LendBookResponseModel {
 }
 
 export interface LendBookDependencies {
-  bookServices: BookServices;
+  bookServices: BookService;
 }
 
 export type LendBookUseCase = (
