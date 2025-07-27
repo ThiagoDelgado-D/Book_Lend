@@ -1,4 +1,4 @@
-import { Entity } from './base-entities/entity';
+import { Entity } from './base-entities/entity.js';
 
 export enum BookStatus {
   AVAILABLE = 'available',
