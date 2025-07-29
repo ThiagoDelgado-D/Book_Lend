@@ -10,6 +10,9 @@ export function mockCryptoService(): CryptoService {
         return v.toString(16);
       }) as UUID;
     },
+    async generateRandomToken(): Promise<string> {
+      return Array.from({ length: 32 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+    },
 
     async hashPassword(password: string): Promise<string> {
       return `[HASHED]${password}`;
