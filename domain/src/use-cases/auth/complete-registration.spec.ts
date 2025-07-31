@@ -1,10 +1,9 @@
-// use-cases/auth/complete-registration.spec.ts
 import { beforeEach, describe, expect, test } from 'vitest';
 import { completeRegistration } from './complete-registration';
 import { mockAuthService } from '../../services/mocks/mock-auth-service';
 import { mockEmailVerificationService } from '../../services/mocks/mock-email-verification-service';
 import { mockCryptoService } from '../../services/mocks/mock-crypto-service';
-import { UserStatus } from '../../entities';
+import { User, UserRole, UserStatus } from '../../entities';
 import { Email } from '../../types/email';
 
 describe('Complete Registration Use Case', () => {
@@ -137,7 +136,7 @@ describe('Complete Registration Use Case', () => {
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
     const userId = await cryptoService.generateUUID();
 
-    const existingUser = {
+    const existingUser: User = {
       id: userId,
       email,
       firstName: 'Existing',
@@ -148,6 +147,7 @@ describe('Complete Registration Use Case', () => {
       enabled: true,
       bookLimit: 3,
       registrationDate: new Date(),
+      role: UserRole.USER,
     };
 
     await authService.save(existingUser);
