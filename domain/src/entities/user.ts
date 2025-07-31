@@ -5,6 +5,10 @@ export enum UserStatus {
   SUSPENDED = 'suspended',
   INACTIVE = 'inactive',
 }
+export enum UserRole {
+  USER = 'user',
+  ADMIN = 'admin',
+}
 
 export interface User extends Entity, Person {
   bookLimit: number;
@@ -12,6 +16,7 @@ export interface User extends Entity, Person {
   hashedPassword: string;
   status: UserStatus;
   enabled: boolean;
+  role: UserRole;
 }
 export type UserSecureFields = 'hashedPassword';
 export type SecureUser = Omit<User, UserSecureFields>;
@@ -27,5 +32,6 @@ export function filterSecureProperties(user: User): SecureUser {
     bookLimit: user.bookLimit,
     enabled: user.enabled,
     registrationDate: user.registrationDate,
+    role: user.role,
   };
 }
