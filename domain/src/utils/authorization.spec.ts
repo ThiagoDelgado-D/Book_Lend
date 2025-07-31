@@ -92,8 +92,6 @@ describe('Authorization Utils', () => {
 
       const result = await verifyAdminRole(authService, adminId);
 
-      // Nota: Actualmente solo verifica el rol, no el estado
-      // Esto podría ser una mejora futura si se requiere
       expect(result.success).toBe(true);
       expect(result.message).toBe('Authorization successful');
     });
