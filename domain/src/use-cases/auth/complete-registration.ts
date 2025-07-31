@@ -1,5 +1,4 @@
-// use-cases/auth/complete-registration.ts
-import { User, UserStatus, filterSecureProperties, SecureUser } from '../../entities';
+import { User, UserStatus, filterSecureProperties, SecureUser, UserRole } from '../../entities';
 import { AuthService } from '../../services/auth-service';
 import { EmailVerificationService } from '../../services/email-verification-service';
 import { CryptoService } from '../../services/crypto-service';
@@ -98,6 +97,7 @@ export const completeRegistration = async (
     enabled: true,
     bookLimit: 3,
     registrationDate: new Date(),
+    role: UserRole.USER,
   };
 
   const savedUser = await authService.save(newUser);
