@@ -1,8 +1,15 @@
 import { Email } from '../../types/email';
 
 export const isValidEmail = (email: string): email is Email => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+  const emailRegex = /^[^\s@]+(?:\.[^\s@]+)*@[^\s@]+\.[^\s@]{2,}$/;
+  if (!emailRegex.test(email)) return false;
+
+  const [local, domain] = email.split('@');
+  if (!local || !domain) return false;
+
+  if (local.includes('..') || domain.includes('..')) return false;
+
+  return true;
 };
 
 export const validateAndNormalizeEmail = (email?: string | null): Email | null => {
