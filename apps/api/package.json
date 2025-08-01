@@ -40,17 +40,10 @@
     "test": "vitest",
     "test:run": "vitest run",
     "type-check": "tsc --noEmit",
-    "db:migrate": "tsx src/scripts/migrate.ts",
-    "db:seed": "tsx src/scripts/seed.ts",
-    "db:setup": "tsx src/scripts/setup-db.ts",
-    "db:reset": "npm run db:setup",
-    "typeorm:setup": "tsx src/scripts/setup-typeorm-db.ts",
-    "typeorm:seed": "tsx src/scripts/seed-typeorm-db.ts",
-    "typeorm:seed:small": "tsx src/scripts/seed-typeorm-db.ts --users 5 --authors 3 --books 10",
-    "typeorm:seed:large": "tsx src/scripts/seed-typeorm-db.ts --users 100 --authors 25 --books 200",
-    "typeorm:seed:clear": "tsx src/scripts/seed-typeorm-db.ts --clear",
-    "typeorm:seed:prod": "tsx src/scripts/seed-production.ts",
-    "typeorm:reset": "rm -f data/booklend.sqlite && npm run typeorm:setup && npm run typeorm:seed",
-    "typeorm:reset:prod": "rm -f data/booklend.sqlite && npm run typeorm:setup && npm run typeorm:seed:prod"
+    "db:seed:prod": "tsx src/scripts/seed-production.ts",
+    "dev:db:setup": "tsx src/scripts/setup-dev-db.ts",
+    "dev:db:seed": "tsx src/scripts/seed-dev-db.ts",
+    "dev:db:init": "npm run dev:db:setup && npm run dev:db:seed",
+    "dev:db:reset": "powershell -Command \"if (Test-Path 'database/booklend-dev.sqlite') { Remove-Item 'database/booklend-dev.sqlite' }\" && npm run dev:db:init"
   }
 }
