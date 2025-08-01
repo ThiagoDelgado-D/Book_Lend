@@ -10,29 +10,31 @@ const authorRepository = new AuthorRepository();
 const cryptoService = new CryptoServiceImplementation();
 
 export const bookTypeORMController = {
-  async getAllBooks(req: Request, res: Response): Promise<void> {
+  async getAllBooks(req: Request, res: Response) {
     try {
       const books = await bookRepository.findAll();
 
-      return res.json({
+      res.json({
         success: true,
         data: books,
         message: 'All books retrieved successfully',
         total: books.length,
         timestamp: new Date().toISOString(),
       });
+      return;
     } catch (error: any) {
-      return res.status(500).json({
+      res.status(500).json({
         success: false,
         error: {
           message: error.message || 'Internal server error',
         },
         timestamp: new Date().toISOString(),
       });
+      return;
     }
   },
 
-  async getBookById(req: Request, res: Response): Promise<void> {
+  async getBookById(req: Request, res: Response) {
     try {
       const { id } = req.params;
       if (!id) {
@@ -74,7 +76,7 @@ export const bookTypeORMController = {
     }
   },
 
-  async createBook(req: Request, res: Response): Promise<void> {
+  async createBook(req: Request, res: Response) {
     try {
       const { title, description, publishedDate, isbn, authorId } = req.body;
 
@@ -140,7 +142,7 @@ export const bookTypeORMController = {
     }
   },
 
-  async updateBook(req: Request, res: Response): Promise<void> {
+  async updateBook(req: Request, res: Response) {
     try {
       const { id } = req.params;
       if (!id) {
@@ -220,7 +222,7 @@ export const bookTypeORMController = {
     }
   },
 
-  async deleteBook(req: Request, res: Response): Promise<void> {
+  async deleteBook(req: Request, res: Response) {
     try {
       const { id } = req.params;
       if (!id) {
@@ -272,7 +274,7 @@ export const bookTypeORMController = {
     }
   },
 
-  async getAvailableBooks(req: Request, res: Response): Promise<void> {
+  async getAvailableBooks(req: Request, res: Response) {
     try {
       const books = await bookRepository.findAvailable();
 
@@ -294,7 +296,7 @@ export const bookTypeORMController = {
     }
   },
 
-  async searchBooks(req: Request, res: Response): Promise<void> {
+  async searchBooks(req: Request, res: Response) {
     try {
       const { q } = req.query;
 
@@ -328,7 +330,7 @@ export const bookTypeORMController = {
     }
   },
 
-  async getBookStatistics(req: Request, res: Response): Promise<void> {
+  async getBookStatistics(req: Request, res: Response) {
     try {
       const statistics = await bookRepository.getStatistics();
 
