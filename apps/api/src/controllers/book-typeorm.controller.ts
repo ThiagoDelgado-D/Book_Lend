@@ -4,7 +4,6 @@ import { BookRepository } from '../repositories/book.repository.js';
 import { AuthorRepository } from '../repositories/author.repository.js';
 import { CryptoServiceImplementation } from '../services/crypto-service.js';
 
-// Initialize repositories using our custom repository layer
 const bookRepository = new BookRepository();
 const authorRepository = new AuthorRepository();
 const cryptoService = new CryptoServiceImplementation();

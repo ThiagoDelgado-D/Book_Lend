@@ -1,5 +1,4 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
-import { UserEntity } from './user.entity.js';
+import { Entity, PrimaryColumn, Column, CreateDateColumn } from 'typeorm';
 
 @Entity('email_verification_tokens')
 export class EmailVerificationTokenEntity {
@@ -20,8 +19,4 @@ export class EmailVerificationTokenEntity {
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
-
-  // Relations
-  @ManyToOne(() => UserEntity, { cascade: false, onDelete: 'CASCADE' })
-  user!: UserEntity;
 }
