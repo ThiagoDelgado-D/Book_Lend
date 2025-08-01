@@ -1,2 +1,2 @@
-export * from './trim-or-null';
-export * from './authorization';
+export * from './trim-or-null.js';
+export * from './authorization.js';

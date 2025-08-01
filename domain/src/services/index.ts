@@ -1,6 +1,10 @@
-export * from './crypto-service';
-export * from './auth-service';
-export * from './author-service';
-export * from './book-service';
-export * from './user-service';
-export * from './email-verification-service';
+// Service interfaces
+export * from './auth-service.js';
+export * from './author-service.js';
+export * from './book-service.js';
+export * from './crypto-service.js';
+export * from './email-verification-service.js';
+export * from './user-service.js';
+
+// Mock implementations
+export * from './mocks/index.js';
