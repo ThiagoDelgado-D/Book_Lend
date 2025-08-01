@@ -10,11 +10,11 @@ const authorRepository = new AuthorRepository();
 const cryptoService = new CryptoServiceImplementation();
 
 export const bookTypeORMController = {
-  async getAllBooks(req: Request, res: Response) {
+  async getAllBooks(req: Request, res: Response): Promise<void> {
     try {
       const books = await bookRepository.findAll();
 
-      res.json({
+      return res.json({
         success: true,
         data: books,
         message: 'All books retrieved successfully',
@@ -22,7 +22,7 @@ export const bookTypeORMController = {
         timestamp: new Date().toISOString(),
       });
     } catch (error: any) {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: {
           message: error.message || 'Internal server error',
@@ -32,9 +32,19 @@ export const bookTypeORMController = {
     }
   },
 
-  async getBookById(req: Request, res: Response) {
+  async getBookById(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
+      if (!id) {
+        return res.status(400).json({
+          success: false,
+          error: {
+            message: 'Book ID is required',
+          },
+          timestamp: new Date().toISOString(),
+        });
+      }
+
       const book = await bookRepository.findById(id);
 
       if (!book) {
@@ -47,14 +57,14 @@ export const bookTypeORMController = {
         });
       }
 
-      res.json({
+      return res.json({
         success: true,
         data: book,
         message: 'Book retrieved successfully',
         timestamp: new Date().toISOString(),
       });
     } catch (error: any) {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: {
           message: error.message || 'Internal server error',
@@ -64,7 +74,7 @@ export const bookTypeORMController = {
     }
   },
 
-  async createBook(req: Request, res: Response) {
+  async createBook(req: Request, res: Response): Promise<void> {
     try {
       const { title, description, publishedDate, isbn, authorId } = req.body;
 
@@ -113,14 +123,14 @@ export const bookTypeORMController = {
         author: author,
       });
 
-      res.status(201).json({
+      return res.status(201).json({
         success: true,
         data: newBook,
         message: 'Book created successfully',
         timestamp: new Date().toISOString(),
       });
     } catch (error: any) {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: {
           message: error.message || 'Internal server error',
@@ -130,9 +140,18 @@ export const bookTypeORMController = {
     }
   },
 
-  async updateBook(req: Request, res: Response) {
+  async updateBook(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
+      if (!id) {
+        return res.status(400).json({
+          success: false,
+          error: {
+            message: 'Book ID is required',
+          },
+          timestamp: new Date().toISOString(),
+        });
+      }
       const { title, description, publishedDate, isbn, authorId, status } = req.body;
 
       const existingBook = await bookRepository.findById(id);
@@ -184,14 +203,14 @@ export const bookTypeORMController = {
       await bookRepository.update(id, updateData);
       const updatedBook = await bookRepository.findById(id);
 
-      res.json({
+      return res.json({
         success: true,
         data: updatedBook,
         message: 'Book updated successfully',
         timestamp: new Date().toISOString(),
       });
     } catch (error: any) {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: {
           message: error.message || 'Internal server error',
@@ -201,9 +220,18 @@ export const bookTypeORMController = {
     }
   },
 
-  async deleteBook(req: Request, res: Response) {
+  async deleteBook(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
+      if (!id) {
+        return res.status(400).json({
+          success: false,
+          error: {
+            message: 'Book ID is required',
+          },
+          timestamp: new Date().toISOString(),
+        });
+      }
 
       const exists = await bookRepository.findById(id);
       if (!exists) {
@@ -219,13 +247,13 @@ export const bookTypeORMController = {
       const deleted = await bookRepository.delete(id);
 
       if (deleted) {
-        res.json({
+        return res.json({
           success: true,
           message: 'Book deleted successfully',
           timestamp: new Date().toISOString(),
         });
       } else {
-        res.status(500).json({
+        return res.status(500).json({
           success: false,
           error: {
             message: 'Failed to delete book',
@@ -234,7 +262,7 @@ export const bookTypeORMController = {
         });
       }
     } catch (error: any) {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: {
           message: error.message || 'Internal server error',
@@ -244,11 +272,11 @@ export const bookTypeORMController = {
     }
   },
 
-  async getAvailableBooks(req: Request, res: Response) {
+  async getAvailableBooks(req: Request, res: Response): Promise<void> {
     try {
       const books = await bookRepository.findAvailable();
 
-      res.json({
+      return res.json({
         success: true,
         data: books,
         message: 'Available books retrieved successfully',
@@ -256,7 +284,7 @@ export const bookTypeORMController = {
         timestamp: new Date().toISOString(),
       });
     } catch (error: any) {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: {
           message: error.message || 'Internal server error',
@@ -266,7 +294,7 @@ export const bookTypeORMController = {
     }
   },
 
-  async searchBooks(req: Request, res: Response) {
+  async searchBooks(req: Request, res: Response): Promise<void> {
     try {
       const { q } = req.query;
 
@@ -282,7 +310,7 @@ export const bookTypeORMController = {
 
       const books = await bookRepository.searchBooks(q);
 
-      res.json({
+      return res.json({
         success: true,
         data: books,
         message: 'Books search completed successfully',
@@ -290,7 +318,7 @@ export const bookTypeORMController = {
         timestamp: new Date().toISOString(),
       });
     } catch (error: any) {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: {
           message: error.message || 'Internal server error',
@@ -300,18 +328,18 @@ export const bookTypeORMController = {
     }
   },
 
-  async getBookStatistics(req: Request, res: Response) {
+  async getBookStatistics(req: Request, res: Response): Promise<void> {
     try {
       const statistics = await bookRepository.getStatistics();
 
-      res.json({
+      return res.json({
         success: true,
         data: statistics,
         message: 'Book statistics retrieved successfully',
         timestamp: new Date().toISOString(),
       });
     } catch (error: any) {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: {
           message: error.message || 'Internal server error',
