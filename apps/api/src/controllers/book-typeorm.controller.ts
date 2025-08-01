@@ -1,18 +1,18 @@
 import { Request, Response } from 'express';
 import { BookEntity, BookStatus } from '../entities/book.entity.js';
-import { AuthorEntity } from '../entities/author.entity.js';
+import { BookRepository } from '../repositories/book.repository.js';
+import { AuthorRepository } from '../repositories/author.repository.js';
 import { CryptoServiceImplementation } from '../services/crypto-service.js';
-import { AppDataSource } from '../config/data-source.js';
 
-// Initialize repositories using TypeORM
-const bookRepository = AppDataSource.getRepository(BookEntity);
-const authorRepository = AppDataSource.getRepository(AuthorEntity);
+// Initialize repositories using our custom repository layer
+const bookRepository = new BookRepository();
+const authorRepository = new AuthorRepository();
 const cryptoService = new CryptoServiceImplementation();
 
 export const bookTypeORMController = {
   async getAllBooks(req: Request, res: Response) {
     try {
-      const books = await bookRepository.find();
+      const books = await bookRepository.findAll();
 
       res.json({
         success: true,
@@ -35,9 +35,7 @@ export const bookTypeORMController = {
   async getBookById(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const book = await bookRepository.findOne({
-        where: { id },
-      });
+      const book = await bookRepository.findById(id);
 
       if (!book) {
         return res.status(404).json({
@@ -80,7 +78,7 @@ export const bookTypeORMController = {
         });
       }
 
-      const author = await authorRepository.findOne({ where: { id: authorId } });
+      const author = await authorRepository.findById(authorId);
       if (!author) {
         return res.status(404).json({
           success: false,
@@ -92,7 +90,7 @@ export const bookTypeORMController = {
       }
 
       if (isbn) {
-        const existingBook = await bookRepository.findOne({ where: { isbn } });
+        const existingBook = await bookRepository.findByIsbn(isbn);
         if (existingBook) {
           return res.status(400).json({
             success: false,
@@ -105,17 +103,15 @@ export const bookTypeORMController = {
       }
 
       const bookId = await cryptoService.generateUUID();
-      const bookData = bookRepository.create({
+      const newBook = await bookRepository.create({
         id: bookId,
         title,
         description,
         publishedDate: publishedDate ? new Date(publishedDate) : undefined,
         isbn,
         status: BookStatus.AVAILABLE,
-        authorId,
+        author: author,
       });
-
-      const newBook = await bookRepository.save(bookData);
 
       res.status(201).json({
         success: true,
@@ -139,9 +135,7 @@ export const bookTypeORMController = {
       const { id } = req.params;
       const { title, description, publishedDate, isbn, authorId, status } = req.body;
 
-      const existingBook = await bookRepository.findOne({
-        where: { id },
-      });
+      const existingBook = await bookRepository.findById(id);
       if (!existingBook) {
         return res.status(404).json({
           success: false,
@@ -153,7 +147,7 @@ export const bookTypeORMController = {
       }
 
       if (authorId && authorId !== existingBook.authorId) {
-        const author = await authorRepository.findOne({ where: { id: authorId } });
+        const author = await authorRepository.findById(authorId);
         if (!author) {
           return res.status(404).json({
             success: false,
@@ -166,7 +160,7 @@ export const bookTypeORMController = {
       }
 
       if (isbn && isbn !== existingBook.isbn) {
-        const bookWithIsbn = await bookRepository.findOne({ where: { isbn } });
+        const bookWithIsbn = await bookRepository.findByIsbn(isbn);
         if (bookWithIsbn && bookWithIsbn.id !== id) {
           return res.status(400).json({
             success: false,
@@ -188,9 +182,7 @@ export const bookTypeORMController = {
       };
 
       await bookRepository.update(id, updateData);
-      const updatedBook = await bookRepository.findOne({
-        where: { id },
-      });
+      const updatedBook = await bookRepository.findById(id);
 
       res.json({
         success: true,
@@ -213,7 +205,7 @@ export const bookTypeORMController = {
     try {
       const { id } = req.params;
 
-      const exists = await bookRepository.exists(id);
+      const exists = await bookRepository.findById(id);
       if (!exists) {
         return res.status(404).json({
           success: false,
@@ -254,7 +246,7 @@ export const bookTypeORMController = {
 
   async getAvailableBooks(req: Request, res: Response) {
     try {
-      const books = await bookRepository.findAvailableBooks();
+      const books = await bookRepository.findAvailable();
 
       res.json({
         success: true,
@@ -288,7 +280,7 @@ export const bookTypeORMController = {
         });
       }
 
-      const books = await bookRepository.search(q);
+      const books = await bookRepository.searchBooks(q);
 
       res.json({
         success: true,
