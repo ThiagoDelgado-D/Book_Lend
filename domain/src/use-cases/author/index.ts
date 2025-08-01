@@ -1,3 +1,3 @@
-export * from './add-author';
-export * from './update-author';
-export * from './delete-author';
+export * from './add-author.js';
+export * from './update-author.js';
+export * from './delete-author.js';
