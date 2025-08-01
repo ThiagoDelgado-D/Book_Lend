@@ -237,7 +237,8 @@ async function createEssentialBooks(bookRepository: BookRepository, authors: any
   ];
 
   for (const bookData of essentialBooks) {
-    const existingBook = await bookRepository.findByIsbn(bookData.isbn);
+    const isbnNumber = parseInt(bookData.isbn.replace(/[^0-9]/g, ''));
+    const existingBook = await bookRepository.findByIsbn(isbnNumber);
     if (!existingBook) {
       // Find the author
       const author = authors.find(
@@ -253,7 +254,7 @@ async function createEssentialBooks(bookRepository: BookRepository, authors: any
           title: bookData.title,
           description: bookData.description,
           publishedDate: bookData.publishedDate,
-          isbn: bookData.isbn,
+          isbn: isbnNumber,
           status: BookStatus.AVAILABLE, // All books available in production
           author,
         });

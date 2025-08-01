@@ -6,6 +6,7 @@
   "description": "BookLend API - REST API layer for book lending application",
   "main": "dist/app.js",
   "dependencies": {
+    "@faker-js/faker": "^9.9.0",
     "app-domain": "workspace:^",
     "bcrypt": "6.0.0",
     "better-sqlite3": "^11.0.0",
