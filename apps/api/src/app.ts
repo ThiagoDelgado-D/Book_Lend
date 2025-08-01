@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import cors from 'cors';
 import 'dotenv/config';
 import express from 'express';
@@ -6,10 +7,10 @@ import compression from 'compression';
 import morgan from 'morgan';
 import { PORT, CLIENT_URL } from './constants.js';
 import { loadRoutes } from './utils/load-routes.js';
+import { initializeDatabase, closeDatabaseConnection } from './config/data-source.js';
 
 const app: Express = express();
 
-// Middleware
 app.use(morgan('dev'));
 app.use(compression() as any);
 app.use(
@@ -22,7 +23,6 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Health check endpoint
 app.get('/', (req, res) => {
   res.json({
     message: 'BookLend API is running',
@@ -31,7 +31,6 @@ app.get('/', (req, res) => {
   });
 });
 
-// Basic API health endpoint
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
@@ -40,13 +39,34 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// API Routes
 app.use('/api', loadRoutes());
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 BookLend API listening on port ${PORT}`);
-  console.log(`📚 Environment: ${process.env.NODE_ENV || 'development'}`);
+async function startServer() {
+  try {
+    await initializeDatabase();
+
+    app.listen(PORT, () => {
+      console.log(`🚀 BookLend API listening on port ${PORT}`);
+      console.log(`📚 Environment: ${process.env.NODE_ENV || 'development'}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+}
+
+process.on('SIGINT', async () => {
+  console.log('\n🛑 Received SIGINT. Graceful shutdown...');
+  await closeDatabaseConnection();
+  process.exit(0);
 });
+
+process.on('SIGTERM', async () => {
+  console.log('\n🛑 Received SIGTERM. Graceful shutdown...');
+  await closeDatabaseConnection();
+  process.exit(0);
+});
+
+startServer();
 
 export default app;
