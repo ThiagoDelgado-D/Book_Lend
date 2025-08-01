@@ -44,7 +44,7 @@ export class BookEntity {
   @Column({ type: 'boolean', default: false })
   isPopular!: boolean;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   entryDate!: Date;
 
   @CreateDateColumn({ name: 'created_at' })
