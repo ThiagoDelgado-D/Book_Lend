@@ -1,5 +1,3 @@
-#!/usr/bin/env tsx
-
 import { setupDevDatabase } from './setup-dev-db';
 import { seedDevDatabase } from './seed-dev-db';
 

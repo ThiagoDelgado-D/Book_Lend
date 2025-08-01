@@ -1,5 +1,3 @@
-#!/usr/bin/env tsx
-
 import { DataSource } from 'typeorm';
 import { join } from 'path';
 import { BookEntity } from '../entities/book.entity';
