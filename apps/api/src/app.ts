@@ -8,6 +8,7 @@ import morgan from 'morgan';
 import { PORT, CLIENT_URL } from './constants.js';
 import { loadRoutes } from './utils/load-routes.js';
 import { initializeDatabase, closeDatabaseConnection } from './config/data-source.js';
+import authRoutes from './routes/auth.routes.js';
 import { errorHandler } from './middlewares/error-handler.js';
 
 const app: Express = express();
@@ -24,6 +25,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use('/api/auth', authRoutes);
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
