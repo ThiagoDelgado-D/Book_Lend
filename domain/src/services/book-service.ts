@@ -6,6 +6,7 @@ export interface BookService {
   findByTitle(title: string): Promise<Book[]>;
   findByIsbn(isbn: string): Promise<Book | null>;
   findByStatus(status: BookStatus): Promise<Book[]>;
+  findAll(): Promise<Book[]>;
   findPopularBooks(): Promise<Book[]>;
   save(book: Book): Promise<Book>;
   delete(id: UUID): Promise<void>;

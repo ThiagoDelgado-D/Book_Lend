@@ -32,6 +32,9 @@ export function mockBookService(books: Book[] = []): MockedBookService {
     async findPopularBooks(): Promise<Book[]> {
       return this.books.filter(book => book.isPopular);
     },
+    async findAll(): Promise<Book[]> {
+      return this.books;
+    },
 
     async save(book: Book): Promise<Book> {
       const index = this.books.findIndex(b => b.id === book.id);

@@ -6,6 +6,7 @@ export interface UserService {
   findById(id: UUID): Promise<User | null>;
   findByEmail(email: Email): Promise<User | null>;
   findByStatus(status: UserStatus): Promise<User[]>;
+  findAll(): Promise<User[]>;
   findActiveUsers(): Promise<User[]>;
   save(user: User): Promise<User>;
   delete(id: UUID): Promise<void>;

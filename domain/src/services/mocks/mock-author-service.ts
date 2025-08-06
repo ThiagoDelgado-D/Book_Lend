@@ -29,6 +29,10 @@ export function mockAuthorService(authors: Author[] = []): MockedAuthorService {
       return this.authors.filter(author => author.isPopular);
     },
 
+    async findAll(): Promise<Author[]> {
+      return this.authors;
+    },
+
     async save(author: Author): Promise<Author> {
       const index = this.authors.findIndex(a => a.id === author.id);
       if (index !== -1) {

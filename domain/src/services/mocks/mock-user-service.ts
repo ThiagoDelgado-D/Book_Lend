@@ -44,5 +44,8 @@ export function mockUserService(users: User[] = []): MockedUserService {
     async delete(id: UUID): Promise<void> {
       this.users = this.users.filter(user => user.id !== id);
     },
+    async findAll() {
+      return this.users;
+    },
   };
 }
