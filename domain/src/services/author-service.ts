@@ -6,6 +6,7 @@ export interface AuthorService {
   findByName(name: string): Promise<Author[]>;
   findByNationality(nationality: string): Promise<Author[]>;
   findPopularAuthors(): Promise<Author[]>;
+  findAll(): Promise<Author[]>;
   save(author: Author): Promise<Author>;
   delete(id: UUID): Promise<void>;
 }
