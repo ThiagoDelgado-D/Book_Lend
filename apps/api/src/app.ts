@@ -8,6 +8,7 @@ import morgan from 'morgan';
 import { PORT, CLIENT_URL } from './constants.js';
 import { loadRoutes } from './utils/load-routes.js';
 import { initializeDatabase, closeDatabaseConnection } from './config/data-source.js';
+import { errorHandler } from './middlewares/error-handler.js';
 
 const app: Express = express();
 
@@ -23,6 +24,13 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get('/api/health', (req, res) => {
+  res.json({
+    success: true,
+    message: 'API is running',
+    timestamp: new Date().toISOString(),
+  });
+});
 app.get('/', (req, res) => {
   res.json({
     message: 'BookLend API is running',
@@ -38,6 +46,8 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
+
+app.use(errorHandler);
 
 app.use('/api', loadRoutes());
 
