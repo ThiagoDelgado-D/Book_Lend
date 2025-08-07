@@ -1,4 +1,4 @@
-import { Author } from 'app-domain';
+import { Author, Book } from 'app-domain';
 export interface ApiResponse<T = any> {
   success: boolean;
   data?: T;
@@ -33,6 +33,10 @@ export interface AuthResponse extends ApiResponse {
 
 export interface AuthorResponse extends ApiResponse<Author> {}
 export interface AuthorsListResponse extends ApiResponse<Author[]> {
+  total?: number;
+}
+export interface BookResponse extends ApiResponse<Book> {}
+export interface BooksListResponse extends ApiResponse<Book[]> {
   total?: number;
 }
 export class ApiResponseFactory {
@@ -128,5 +132,15 @@ export class ApiResponseFactory {
     message: string = 'Authors retrieved successfully'
   ): AuthorsListResponse {
     return this.successList(authors, message);
+  }
+  static bookSuccess(book: Book, message: string = 'Book operation successful'): BookResponse {
+    return this.success(book, message);
+  }
+
+  static booksListSuccess(
+    books: Book[],
+    message: string = 'Books retrieved successfully'
+  ): BooksListResponse {
+    return this.successList(books, message);
   }
 }
