@@ -1,34 +1,32 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column } from 'typeorm';
+import { BaseEntity } from './base.entity';
 
 @Entity('authors')
-export class AuthorEntity {
-  @PrimaryColumn('text')
-  id!: string;
-
-  @Column({ type: 'text', name: 'first_name' })
+export class AuthorEntity extends BaseEntity {
+  @Column('varchar', { length: 255 })
   firstName!: string;
 
-  @Column({ type: 'text', name: 'last_name' })
+  @Column('varchar', { length: 255 })
   lastName!: string;
 
-  @Column({ type: 'date', name: 'birth_date', nullable: true })
-  birthDate?: Date;
+  @Column('varchar', { length: 320, nullable: true })
+  email?: string | null;
 
-  @Column({ type: 'date', name: 'death_date', nullable: true })
-  deathDate?: Date;
+  @Column('varchar', { length: 20, nullable: true })
+  phoneNumber?: string | null;
 
-  @Column({ type: 'text', nullable: true })
-  biography?: string;
+  @Column('text')
+  biography!: string;
 
-  @Column({ type: 'text', nullable: true })
-  nationality?: string;
+  @Column('varchar', { length: 100 })
+  nationality!: string;
 
-  @Column({ type: 'boolean', name: 'is_popular', default: false })
+  @Column('date')
+  birthDate!: Date;
+
+  @Column('date', { nullable: true })
+  deathDate?: Date | null;
+
+  @Column('boolean', { default: false })
   isPopular!: boolean;
-
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt!: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt!: Date;
 }
