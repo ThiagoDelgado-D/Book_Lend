@@ -1,10 +1,8 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, Column, CreateDateColumn } from 'typeorm';
+import { BaseEntity } from './base.entity';
 
 @Entity('email_verification_tokens')
-export class EmailVerificationTokenEntity {
-  @PrimaryColumn('text')
-  id!: string;
-
+export class EmailVerificationTokenEntity extends BaseEntity {
   @Column({ type: 'text', name: 'user_id' })
   userId!: string;
 
