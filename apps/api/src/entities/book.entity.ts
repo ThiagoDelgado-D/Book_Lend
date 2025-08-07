@@ -1,4 +1,5 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { BaseEntity } from './base.entity';
 
 export enum BookStatus {
   AVAILABLE = 'available',
@@ -9,10 +10,7 @@ export enum BookStatus {
 }
 
 @Entity('books')
-export class BookEntity {
-  @PrimaryColumn('text')
-  id!: string;
-
+export class BookEntity extends BaseEntity {
   @Column({ type: 'text' })
   title!: string;
 
