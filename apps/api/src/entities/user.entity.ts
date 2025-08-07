@@ -1,4 +1,5 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { BaseEntity } from './base.entity';
 
 export enum UserRole {
   USER = 'user',
@@ -12,10 +13,7 @@ export enum UserStatus {
 }
 
 @Entity('users')
-export class UserEntity {
-  @PrimaryColumn('text')
-  id!: string;
-
+export class UserEntity extends BaseEntity {
   @Column({ type: 'text', unique: true })
   email!: string;
 
