@@ -39,6 +39,14 @@ export class BookServiceImpl implements BookService {
     const entities = await this.repository.find({
       where: { isPopular: true },
       take: 10,
+      order: { totalLoans: 'DESC' },
+    });
+    return entities.map(entity => this.mapToDomain(entity));
+  }
+
+  async findAll(): Promise<Book[]> {
+    const entities = await this.repository.find({
+      order: { title: 'ASC' },
     });
     return entities.map(entity => this.mapToDomain(entity));
   }
