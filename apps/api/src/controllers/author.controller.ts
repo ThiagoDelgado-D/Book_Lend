@@ -1,63 +1,164 @@
 import { Request, Response } from 'express';
-import { Author, mockAuthorService } from 'app-domain';
+import { AuthorServiceImpl, UserServiceImpl } from '../services';
+import { Author, createAuthor, deleteAuthor, updateAuthor, UUID } from 'app-domain';
+import { CryptoServiceImplementation } from '../services/crypto-service';
+import { asyncHandler, createDomainError } from '../middlewares/error-handler';
+import { AuthenticatedRequest } from '../middlewares/auth.middleware';
+import { AuthorsListResponse, ApiResponseFactory, AuthorResponse } from '../types/api-response';
 
-const mockAuthors: Author[] = [
-  {
-    id: '550e8400-e29b-41d4-a716-446655441001',
-    firstName: 'Robert',
-    lastName: 'Martin',
-    email: 'bob@cleancoder.com',
-    phoneNumber: null,
-    birthDate: new Date('1952-12-05'),
-    deathDate: null,
-    nationality: 'American',
-    biography: 'Software craftsman, author of Clean Code and Clean Architecture',
-    isPopular: true,
-  },
-  {
-    id: '550e8400-e29b-41d4-a716-446655441002',
-    firstName: 'Eric',
-    lastName: 'Evans',
-    email: 'eric@domainlanguage.com',
-    phoneNumber: null,
-    birthDate: new Date('1962-08-15'),
-    deathDate: null,
-    nationality: 'American',
-    biography: 'Domain-Driven Design pioneer and consultant',
-    isPopular: true,
-  },
-];
-
-const authorService = mockAuthorService(mockAuthors);
+const authorService = new AuthorServiceImpl();
+const authService = new UserServiceImpl();
+const cryptoService = new CryptoServiceImplementation();
 
 export const authorController = {
-  async getAllAuthors(req: Request, res: Response) {
-    try {
-      res.json({
-        success: true,
-        data: authorService.authors,
-        message: 'Authors retrieved successfully',
-        total: authorService.authors.length,
-        timestamp: new Date().toISOString(),
-      });
-    } catch (error: any) {
-      res.status(500).json({
-        success: false,
-        error: {
-          message: error.message || 'Internal server error',
-        },
-        timestamp: new Date().toISOString(),
-      });
-    }
-  },
+  getAllAuthors: asyncHandler(async (req: Request, res: Response) => {
+    const authors = await authorService.findAll();
 
-  async createAuthor(req: Request, res: Response) {
-    res.status(501).json({
-      success: false,
-      message:
-        'Create author endpoint not implemented yet - this demonstrates clean domain exports!',
-      note: 'Available functions: createAuthor, updateAuthor, deleteAuthor',
-      timestamp: new Date().toISOString(),
-    });
-  },
+    const response: AuthorsListResponse = ApiResponseFactory.authorsListSuccess(
+      authors,
+      'Authors retrieved successfully'
+    );
+
+    res.json(response);
+  }),
+  getAuthorById: asyncHandler(async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json(ApiResponseFactory.error('Author ID is required'));
+    }
+
+    const author = await authorService.findById(id as UUID);
+
+    if (!author) {
+      return res.status(404).json(ApiResponseFactory.error('Author not found'));
+    }
+
+    const response: AuthorResponse = ApiResponseFactory.authorSuccess(
+      author,
+      'Author retrieved successfully'
+    );
+
+    return res.json(response);
+  }),
+  searchAuthors: asyncHandler(async (req: Request, res: Response) => {
+    const { query, nationality } = req.query;
+
+    if (!query && !nationality) {
+      return res
+        .status(400)
+        .json(ApiResponseFactory.error('Search query (q) or nationality is required'));
+    }
+
+    let authors: Author[] = [];
+    if (query && typeof query === 'string') {
+      authors = await authorService.findByName(query);
+    } else if (nationality && typeof nationality === 'string') {
+      authors = await authorService.findByNationality(nationality);
+    }
+
+    const response: AuthorsListResponse = ApiResponseFactory.authorsListSuccess(
+      authors,
+      'Authors search completed successfully'
+    );
+
+    return res.json(response);
+  }),
+  getPopularAuthors: asyncHandler(async (req: Request, res: Response) => {
+    const authors = await authorService.findPopularAuthors();
+
+    const response: AuthorsListResponse = ApiResponseFactory.authorsListSuccess(
+      authors,
+      'Popular authors retrieved successfully'
+    );
+
+    res.json(response);
+  }),
+  createAuthor: asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const adminUserId = req.user.id;
+
+    const domainResult = await createAuthor(
+      {
+        authorService,
+        authService,
+        cryptoService,
+      },
+      {
+        adminUserId,
+        ...req.body,
+      }
+    );
+
+    if (!domainResult.success) {
+      throw createDomainError(domainResult.message as string);
+    }
+
+    const response: AuthorResponse = ApiResponseFactory.authorSuccess(
+      domainResult.author!,
+      domainResult.message as string
+    );
+
+    return res.status(201).json(response);
+  }),
+  updateAuthor: asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const { id } = req.params;
+    const adminUserId = req.user?.id;
+
+    if (!adminUserId) {
+      return res.status(401).json(ApiResponseFactory.error('Authentication required'));
+    }
+
+    const domainResult = await updateAuthor(
+      {
+        authorService,
+        authService,
+      },
+      {
+        adminUserId,
+        authorId: id as UUID,
+        ...req.body,
+      }
+    );
+
+    if (!domainResult.success) {
+      throw createDomainError(domainResult.message as string);
+    }
+
+    const response: AuthorResponse = ApiResponseFactory.authorSuccess(
+      domainResult.author!,
+      domainResult.message
+    );
+
+    return res.json(response);
+  }),
+  deleteAuthor: asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const { id } = req.params;
+    const adminUserId = req.user?.id;
+
+    if (!adminUserId) {
+      return res.status(401).json(ApiResponseFactory.error('Authentication required'));
+    }
+
+    if (!id) {
+      return res.status(400).json(ApiResponseFactory.error('Author ID is required'));
+    }
+
+    const domainResult = await deleteAuthor(
+      {
+        authorService,
+        authService,
+      },
+      {
+        adminUserId,
+        authorId: id as UUID,
+      }
+    );
+
+    if (!domainResult.success) {
+      throw createDomainError(domainResult.message as string);
+    }
+
+    const response = ApiResponseFactory.deleteSuccess(domainResult.message);
+    return res.json(response);
+  }),
 };

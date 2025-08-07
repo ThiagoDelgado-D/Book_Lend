@@ -10,6 +10,7 @@ import { loadRoutes } from './utils/load-routes.js';
 import { initializeDatabase, closeDatabaseConnection } from './config/data-source.js';
 import authRoutes from './routes/auth.routes.js';
 import { errorHandler } from './middlewares/error-handler.js';
+import { authorRoutes } from './routes/author.routes.js';
 
 const app: Express = express();
 
@@ -25,7 +26,6 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/api/auth', authRoutes);
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
@@ -40,14 +40,8 @@ app.get('/', (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
-
-app.get('/api/health', (req, res) => {
-  res.json({
-    success: true,
-    message: 'API is healthy',
-    timestamp: new Date().toISOString(),
-  });
-});
+app.use('/api/auth', authRoutes);
+app.use('/api/authors', authorRoutes);
 
 app.use(errorHandler);
 
