@@ -8,9 +8,7 @@ import morgan from 'morgan';
 import { PORT, CLIENT_URL } from './constants.js';
 import { loadRoutes } from './utils/load-routes.js';
 import { initializeDatabase, closeDatabaseConnection } from './config/data-source.js';
-import authRoutes from './routes/auth.routes.js';
 import { errorHandler } from './middlewares/error-handler.js';
-import { authorRoutes } from './routes/author.routes.js';
 
 const app: Express = express();
 
@@ -40,8 +38,6 @@ app.get('/', (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
-app.use('/api/auth', authRoutes);
-app.use('/api/authors', authorRoutes);
 
 app.use(errorHandler);
 
