@@ -1,188 +1,206 @@
-import { DataSource } from 'typeorm';
-import { join } from 'path';
-import { BookEntity, BookStatus } from '../entities/book.entity';
-import { AuthorEntity } from '../entities/author.entity';
-import { UserEntity, UserRole, UserStatus } from '../entities/user.entity';
-import { randomUUID } from 'crypto';
+import 'reflect-metadata';
+import { initializeDatabase, closeDatabaseConnection } from '../config/data-source.js';
+import { CryptoServiceImplementation } from '../services/crypto-service.js';
+import { UserRole } from '../entities/user.entity.js';
+import { UserServiceImpl } from '../services/user.service.js';
+import { AuthorServiceImpl } from '../services/author.service.js';
+import { BookServiceImpl } from '../services/book.service.js';
+import {
+  type User,
+  type Author,
+  type Book,
+  UserStatus,
+  validateAndNormalizeEmail,
+  BookStatus,
+} from 'app-domain';
+import { faker } from '@faker-js/faker';
+import { fileURLToPath } from 'url';
 
-/**
- * Development database seeding script
- * Populates SQLite database with sample data for development
- */
+const cryptoService = new CryptoServiceImplementation();
 
-const devDataSource = new DataSource({
-  type: 'better-sqlite3',
-  database: join(process.cwd(), 'database', 'booklend-dev.sqlite'),
-  entities: [BookEntity, AuthorEntity, UserEntity],
-  synchronize: false,
-  logging: true,
-});
+const currentFilePath = fileURLToPath(import.meta.url);
+const executedFilePath = process.argv[1];
 
 async function seedDevDatabase() {
+  console.log('🛠️ Starting development database seeding...\n');
+
   try {
-    console.log('🌱 Seeding development database...');
+    await initializeDatabase();
+    console.log('✅ Database connection established!\n');
 
-    // Initialize database connection
-    await devDataSource.initialize();
-    console.log('✅ Database connection established');
+    const userService = new UserServiceImpl();
+    const authorService = new AuthorServiceImpl();
+    const bookService = new BookServiceImpl();
 
-    // Get repositories
-    const authorRepo = devDataSource.getRepository(AuthorEntity);
-    const bookRepo = devDataSource.getRepository(BookEntity);
-    const userRepo = devDataSource.getRepository(UserEntity);
+    console.log('👑 Creating admin user...');
+    await createDevAdminUser(userService);
 
-    // Clear existing data
-    console.log('🧹 Clearing existing data...');
-    await bookRepo.clear();
-    await authorRepo.clear();
-    await userRepo.clear();
+    console.log('👥 Creating test users...');
+    await createTestUsers(userService, 5);
 
-    // Create sample authors
-    console.log('👨‍💼 Creating sample authors...');
-    const authors = [
-      {
-        id: randomUUID(),
-        firstName: 'Gabriel García',
-        lastName: 'Márquez',
-        nationality: 'Colombian',
-        birthDate: new Date('1927-03-06'),
-        isPopular: true,
-      },
-      {
-        id: randomUUID(),
-        firstName: 'Isabel',
-        lastName: 'Allende',
-        nationality: 'Chilean',
-        birthDate: new Date('1942-08-02'),
-        isPopular: true,
-      },
-      {
-        id: randomUUID(),
-        firstName: 'Jorge Luis',
-        lastName: 'Borges',
-        nationality: 'Argentine',
-        birthDate: new Date('1899-08-24'),
-        isPopular: true,
-      },
-    ];
+    console.log('✍️ Creating authors...');
+    const authors = await createTestAuthors(authorService, 15);
 
-    const savedAuthors = await authorRepo.save(authors);
-    console.log(`✅ Created ${savedAuthors.length} authors`);
+    console.log('📚 Creating books...');
+    await createTestBooks(bookService, authors, 30);
 
-    if (savedAuthors.length < 3) {
-      throw new Error('Failed to create all required authors');
-    }
+    const users = await userService.findAll();
+    const allAuthors = await authorService.findAll();
+    const books = await bookService.findAll();
 
-    // Create sample books
-    console.log('📚 Creating sample books...');
-    const books = [
-      {
-        id: randomUUID(),
-        title: 'Cien años de soledad',
-        description: 'Una obra maestra del realismo mágico',
-        pages: 471,
-        publisher: 'Editorial Sudamericana',
-        publishedDate: new Date('1967-06-05'),
-        isbn: 9780060883287,
-        status: BookStatus.AVAILABLE,
-        totalLoans: 15,
-        isPopular: true,
-        entryDate: new Date(),
-        authorId: savedAuthors[0]!.id,
-      },
-      {
-        id: randomUUID(),
-        title: 'La casa de los espíritus',
-        description: 'Una saga familiar chilena',
-        pages: 448,
-        publisher: 'Plaza & Janés',
-        publishedDate: new Date('1982-10-01'),
-        isbn: 9780553273915,
-        status: BookStatus.AVAILABLE,
-        totalLoans: 8,
-        isPopular: false,
-        entryDate: new Date(),
-        authorId: savedAuthors[1]!.id,
-      },
-      {
-        id: randomUUID(),
-        title: 'Ficciones',
-        description: 'Colección de cuentos fantásticos',
-        pages: 174,
-        publisher: 'Sur',
-        publishedDate: new Date('1944-01-01'),
-        isbn: 9780802130303,
-        status: BookStatus.BORROWED,
-        totalLoans: 25,
-        isPopular: true,
-        entryDate: new Date(),
-        authorId: savedAuthors[2]!.id,
-      },
-      {
-        id: randomUUID(),
-        title: 'El amor en los tiempos del cólera',
-        description: 'Una historia de amor que perdura',
-        pages: 368,
-        publisher: 'Editorial Oveja Negra',
-        publishedDate: new Date('1985-03-01'),
-        isbn: 9780307389732,
-        status: BookStatus.AVAILABLE,
-        totalLoans: 12,
-        isPopular: true,
-        entryDate: new Date(),
-        authorId: savedAuthors[0]!.id,
-      },
-    ];
+    console.log('\n📊 Development Database Statistics:');
+    console.log('─'.repeat(40));
+    console.log(`👥 Users: ${users.length} (1 Admin, ${users.length - 1} Regular)`);
+    console.log(`✍️ Authors: ${allAuthors.length}`);
+    console.log(`📚 Books: ${books.length}`);
+    console.log('─'.repeat(40));
 
-    const savedBooks = await bookRepo.save(books);
-    console.log(`✅ Created ${savedBooks.length} books`);
-
-    // Create sample users
-    console.log('👥 Creating sample users...');
-    const users = [
-      {
-        id: randomUUID(),
-        email: 'admin@booklend.dev',
-        passwordHash: '$2b$10$hashedpassword123', // In real app, this should be properly hashed
-        firstName: 'Admin',
-        lastName: 'User',
-        status: UserStatus.ACTIVE,
-        role: UserRole.ADMIN,
-        emailVerified: 1,
-      },
-      {
-        id: randomUUID(),
-        email: 'user@booklend.dev',
-        passwordHash: '$2b$10$hashedpassword456', // In real app, this should be properly hashed
-        firstName: 'John',
-        lastName: 'Doe',
-        status: UserStatus.ACTIVE,
-        role: UserRole.USER,
-        emailVerified: 1,
-      },
-    ];
-
-    const savedUsers = await userRepo.save(users);
-    console.log(`✅ Created ${savedUsers.length} users`);
-
-    console.log('🎉 Development database seeded successfully!');
-    console.log('📊 Summary:');
-    console.log(`   📚 Books: ${savedBooks.length}`);
-    console.log(`   👨‍💼 Authors: ${savedAuthors.length}`);
-    console.log(`   👥 Users: ${savedUsers.length}`);
+    console.log('\n🎉 Development database seeding completed!');
+    console.log('📋 Test credentials:');
+    console.log('   Admin - Email: admin@test.com | Password: admin123');
+    console.log('   User  - Email: user@test.com  | Password: user123');
   } catch (error) {
-    console.error('❌ Error seeding development database:', error);
-    process.exit(1);
+    console.error('❌ Development seeding failed:', error);
+    throw error;
   } finally {
-    if (devDataSource.isInitialized) {
-      await devDataSource.destroy();
-    }
+    await closeDatabaseConnection();
+    console.log('🔒 Database connection closed.');
   }
 }
 
-// Run seeding if this is the main module
-if (process.env.NODE_ENV !== 'test') {
-  seedDevDatabase();
+async function createDevAdminUser(userService: UserServiceImpl) {
+  const adminId = await cryptoService.generateUUID();
+  const adminPasswordHash = await cryptoService.hashPassword('admin123');
+
+  const adminUser: User = {
+    id: adminId,
+    email: 'admin@test.com',
+    firstName: 'Admin',
+    lastName: 'Test',
+    phoneNumber: '+1-555-0100',
+    hashedPassword: adminPasswordHash,
+    status: UserStatus.ACTIVE,
+    enabled: true,
+    bookLimit: 10,
+    registrationDate: new Date(),
+    role: UserRole.ADMIN,
+  };
+
+  await userService.save(adminUser);
+  console.log('  ✓ Admin user created (admin@test.com / admin123)');
+}
+
+async function createTestUsers(userService: UserServiceImpl, count: number) {
+  const userId = await cryptoService.generateUUID();
+  const userPasswordHash = await cryptoService.hashPassword('user123');
+
+  const testUser: User = {
+    id: userId,
+    email: 'user@test.com',
+    firstName: 'Test',
+    lastName: 'User',
+    phoneNumber: '+1-555-0101',
+    hashedPassword: userPasswordHash,
+    status: UserStatus.ACTIVE,
+    enabled: true,
+    bookLimit: 3,
+    registrationDate: new Date(),
+    role: UserRole.USER,
+  };
+
+  await userService.save(testUser);
+  console.log('  ✓ Test user created (user@test.com / user123)');
+
+  for (let i = 0; i < count - 1; i++) {
+    const id = await cryptoService.generateUUID();
+    const password = await cryptoService.hashPassword('password123');
+
+    const user: User = {
+      id,
+      email: validateAndNormalizeEmail(faker.internet.email()),
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+      phoneNumber: Math.random() > 0.3 ? faker.phone.number() : null,
+      hashedPassword: password,
+      status: UserStatus.ACTIVE,
+      enabled: true,
+      bookLimit: faker.number.int({ min: 2, max: 5 }),
+      registrationDate: faker.date.recent({ days: 90 }),
+      role: UserRole.USER,
+    };
+
+    await userService.save(user);
+  }
+
+  console.log(`  ✓ ${count} random users created`);
+}
+
+async function createTestAuthors(
+  authorService: AuthorServiceImpl,
+  count: number
+): Promise<Author[]> {
+  const authors: Author[] = [];
+
+  for (let i = 0; i < count; i++) {
+    const id = await cryptoService.generateUUID();
+    const birthDate = faker.date.birthdate({ min: 1920, max: 1990, mode: 'year' });
+    const deathDate =
+      Math.random() > 0.8 ? faker.date.between({ from: birthDate, to: new Date() }) : null;
+
+    const author: Author = {
+      id,
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+      email: validateAndNormalizeEmail(Math.random() > 0.4 ? faker.internet.email() : null),
+      phoneNumber: Math.random() > 0.6 ? faker.phone.number() : null,
+      biography: faker.lorem.paragraphs(2),
+      nationality: faker.location.country(),
+      birthDate,
+      deathDate,
+      isPopular: true,
+    };
+
+    const savedAuthor = await authorService.save(author);
+    authors.push(savedAuthor);
+  }
+
+  console.log(`  ✓ ${count} authors created`);
+  return authors;
+}
+
+async function createTestBooks(bookService: BookServiceImpl, authors: Author[], count: number) {
+  for (let i = 0; i < count; i++) {
+    const id = await cryptoService.generateUUID();
+
+    const book: Book = {
+      id,
+      title: faker.lorem.words({ min: 2, max: 6 }),
+      ISBN: faker.number.int({ min: 1000000000000, max: 9999999999999 }),
+      pages: faker.number.int({ min: 100, max: 800 }),
+      publicationDate: faker.date.between({ from: '1950-01-01', to: '2024-01-01' }),
+      publisher: faker.company.name(),
+      status: BookStatus.AVAILABLE,
+      totalLoans: faker.number.int({ min: 0, max: 50 }),
+      isPopular: true,
+      entryDate: faker.date.recent({ days: 365 }),
+    };
+
+    await bookService.save(book);
+  }
+
+  console.log(`  ✓ ${count} books created`);
+}
+
+if (currentFilePath === executedFilePath) {
+  seedDevDatabase()
+    .then(() => {
+      console.log('\n✨ Development seeding completed! Ready for testing.');
+      process.exit(0);
+    })
+    .catch(error => {
+      console.error('❌ Development seeding failed:', error);
+      process.exit(1);
+    });
 }
 
 export { seedDevDatabase };
