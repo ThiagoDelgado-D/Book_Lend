@@ -35,6 +35,10 @@ export class UserServiceImpl implements UserService {
     });
     return entities.map(entity => this.mapToDomain(entity));
   }
+  async findAll(): Promise<User[]> {
+    const entities = await this.repository.find();
+    return entities.map(entity => this.mapToDomain(entity));
+  }
 
   async save(user: User): Promise<User> {
     const entity = this.mapToEntity(user);
