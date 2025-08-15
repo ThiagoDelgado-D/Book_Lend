@@ -2,8 +2,9 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": ".",
-    "baseUrl": "."
+    "rootDir": "./src",
+    "baseUrl": ".",
+    "composite": true
   },
   "include": ["src/**/*", "entities/**/*", "src/repositories/**/*", "src/use-cases/**/*"],
   "exclude": ["dist", "**/*.test.ts", "**/*.spec.ts"]
