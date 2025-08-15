@@ -4,11 +4,25 @@
     "node": true,
     "es2022": true
   },
-  "extends": ["eslint:recommended"],
+  "plugins": ["react-refresh", "react"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/strict",
+    "plugin:@typescript-eslint/stylistic",
+    "plugin:react-hooks/recommended",
+    "plugin:react/recommended",
+    "plugin:react/jsx-runtime",
+    "prettier"
+  ],
   "rules": {
     "no-console": "warn",
     "prefer-const": "error",
     "no-unused-vars": "error"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
   },
   "overrides": [
     {
