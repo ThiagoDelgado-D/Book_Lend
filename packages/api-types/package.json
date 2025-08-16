@@ -1,0 +1,41 @@
+{
+  "name": "api-types",
+  "version": "1.0.0",
+  "description": "Shared API types and interfaces for BookLend project",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc --build --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "api",
+    "types",
+    "typescript",
+    "booklend"
+  ],
+  "dependencies": {
+    "app-domain": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  },
+  "peerDependencies": {
+    "app-domain": "workspace:*"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "package.json",
+    "README.md"
+  ]
+}

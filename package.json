@@ -4,6 +4,7 @@
   "type": "module",
   "workspaces": [
     "apps/*",
+    "packages/*",
     "domain"
   ],
   "packageManager": "yarn@4.1.1",

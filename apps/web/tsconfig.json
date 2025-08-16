@@ -22,6 +22,6 @@
       "app-domain/*": ["../../domain/dist/*"]
     }
   },
-  "include": ["src/**/*", "../../domain/src/**/*"],
+  "include": ["src/**/*"],
   "references": [{ "path": "../../domain" }]
 }
