@@ -1,19 +1,19 @@
 import 'dotenv/config';
-import { PORT } from './constants.js';
+import { NODE_ENV, PORT } from './constants.js';
 import { createApplication } from './application.js';
 import { createExpressApp } from './express-app.js';
 
 async function main() {
   try {
     const app = createExpressApp({
-      enableLogging: process.env.NODE_ENV !== 'test',
+      enableLogging: NODE_ENV !== 'test',
       enableCompression: true,
     });
 
     const application = createApplication({
       app,
       port: PORT,
-      environment: process.env.NODE_ENV || 'development',
+      environment: NODE_ENV || 'development',
     });
 
     const shutdown = async (signal: string) => {
