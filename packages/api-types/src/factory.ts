@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Author, Book } from 'app-domain';
+import { ApiResponse, PaginatedResponse } from './response';
 import {
-  ApiResponse,
-  PaginatedResponse,
-  AuthorResponse,
-  AuthorsListResponse,
-  BookResponse,
-  BooksListResponse,
-} from './response';
+  DetailedAuthResponse,
+  RefreshTokenResponse,
+  UserProfileResponse,
+  VerifyEmailTokenResponse,
+} from './auth/auth';
+import { AuthorResponse, AuthorsListResponse } from './author/author';
+import { BookResponse, BooksListResponse } from './books/book';
 
 export class ApiResponseFactory {
   static success<T>(data: T, message = 'Operation successful'): ApiResponse<T> {
@@ -73,13 +73,13 @@ export class ApiResponseFactory {
 
   static fromDomainResult<T>(domainResult: {
     success: boolean;
-    message: unknown | string;
+    message: string;
     data?: T;
   }): ApiResponse<T> {
     if (domainResult.success) {
-      return this.success(domainResult.data!, domainResult.message as string);
+      return this.success(domainResult.data as T, domainResult.message);
     } else {
-      return this.error(domainResult.message as string);
+      throw this.error(domainResult.message);
     }
   }
 
@@ -91,7 +91,75 @@ export class ApiResponseFactory {
     };
   }
 
-  // Métodos específicos por dominio
+  static detailedAuthSuccess(
+    token: string,
+    user: {
+      id: string;
+      email: string;
+      firstName: string;
+      lastName: string;
+      phoneNumber?: string;
+      role: string;
+      bookLimit: number;
+      registrationDate: Date;
+    },
+    message = 'Login successful'
+  ): DetailedAuthResponse {
+    return {
+      success: true,
+      data: { token, user },
+      message,
+      timestamp: new Date().toISOString(),
+    };
+  }
+
+  static refreshTokenSuccess(
+    token: string,
+    message = 'Token refreshed successfully'
+  ): RefreshTokenResponse {
+    return {
+      success: true,
+      data: { token },
+      message,
+      timestamp: new Date().toISOString(),
+    };
+  }
+
+  static userProfileSuccess(
+    user: {
+      id: string;
+      email: string;
+      firstName: string;
+      lastName: string;
+      phoneNumber?: string;
+      role: string;
+      bookLimit: number;
+      registrationDate: Date;
+      status: string;
+      enabled: boolean;
+    },
+    message = 'Profile retrieved successfully'
+  ): UserProfileResponse {
+    return {
+      success: true,
+      data: user,
+      message,
+      timestamp: new Date().toISOString(),
+    };
+  }
+
+  static verifyEmailSuccess(
+    email: string,
+    message = 'Email verified successfully'
+  ): VerifyEmailTokenResponse {
+    return {
+      success: true,
+      email,
+      message,
+      timestamp: new Date().toISOString(),
+    };
+  }
+
   static authorSuccess(author: Author, message = 'Author operation successful'): AuthorResponse {
     return this.success(author, message);
   }
