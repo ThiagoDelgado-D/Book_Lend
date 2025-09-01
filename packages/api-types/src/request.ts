@@ -69,3 +69,22 @@ export interface CreateCategoryRequest {
 }
 
 export interface UpdateCategoryRequest extends Partial<CreateCategoryRequest> {}
+
+export interface AuthorSearchParams {
+  query?: string;
+  nationality?: string;
+}
+
+export interface BookSearchParams {
+  title?: string;
+  status?: string;
+}
+
+export interface EntityIdParams {
+  id: string;
+}
+
+export interface SearchQueryParams {
+  query?: string;
+  q?: string;
+}
