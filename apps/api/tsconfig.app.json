@@ -4,6 +4,6 @@
     "noEmit": false,
     "outDir": "dist"
   },
-  "files": ["src/app.ts"],
+  "files": ["src/server.ts"],
   "exclude": ["**/*.spec.ts", "**/*.test.ts"]
 }
