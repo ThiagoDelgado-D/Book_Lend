@@ -73,26 +73,7 @@ cd booklend
    yarn install
    ```
 
-3. **Setup database:**
-
-   ```bash
-   yarn prepare
-   ```
-
-   ````bash
-
-   ```bash
-   ````
-
-   ````
-
-   ```bash
-
-   ```bash
-
-   ````
-
-4. **Start the server:**
+3. **Start the server:**
    ```bash
    yarn dev
    ```
