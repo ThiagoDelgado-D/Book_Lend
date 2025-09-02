@@ -5,446 +5,191 @@ REST API for the BookLend library management system, built with Express.js, Type
 ## Quick Start
 
 ```bash
-# Install dependencies
 yarn install
-
-# Configure environment variables
-cp .env.example .env
-
-# Setup database and seed data
-yarn db:setup
-
-# Start in development
-yarn dev
 ```
-
-API will be available at `http://localhost:3000`
-
-## API Architecture
-
-```
-src/
-├── controllers/        # REST controllers
-├── routes/            # Route definitions
-├── middlewares/       # Custom middleware
-├── services/          # Domain service implementations
-├── entities/          # TypeORM entities
-├── config/           # Configuration (DB, JWT, etc.)
-├── scripts/          # Database management scripts
-├── utils/            # API utilities
-└── container/        # Dependency injection
-```
-
-## Available Endpoints
-
-### Authentication `/api/auth`
-
-| Method | Endpoint             | Description             | Auth |
-| ------ | -------------------- | ----------------------- | ---- |
-| `POST` | `/send-verification` | Send email verification | ❌   |
-| `POST` | `/verify-email`      | Verify email token      | ❌   |
-| `POST` | `/register`          | Complete registration   | ❌   |
-| `POST` | `/login`             | Login                   | ❌   |
-| `POST` | `/refresh`           | Refresh JWT token       | ❌   |
-| `GET`  | `/profile`           | Get user profile        | ✅   |
-
-### Books `/api/books`
-
-| Method   | Endpoint   | Description     | Auth | Role  |
-| -------- | ---------- | --------------- | ---- | ----- |
-| `GET`    | `/`        | List all books  | ❌   | -     |
-| `GET`    | `/popular` | Popular books   | ❌   | -     |
-| `GET`    | `/search`  | Search books    | ❌   | -     |
-| `GET`    | `/:id`     | Get book by ID  | ❌   | -     |
-| `POST`   | `/`        | Create new book | ✅   | Admin |
-| `PUT`    | `/:id`     | Update book     | ✅   | Admin |
-| `DELETE` | `/:id`     | Delete book     | ✅   | Admin |
-
-### Authors `/api/authors`
-
-| Method   | Endpoint  | Description      | Auth | Role  |
-| -------- | --------- | ---------------- | ---- | ----- |
-| `GET`    | `/`       | List authors     | ❌   | -     |
-| `GET`    | `/search` | Search authors   | ❌   | -     |
-| `GET`    | `/:id`    | Get author by ID | ❌   | -     |
-| `POST`   | `/`       | Create author    | ✅   | Admin |
-| `PUT`    | `/:id`    | Update author    | ✅   | Admin |
-| `DELETE` | `/:id`    | Delete author    | ✅   | Admin |
-
-## Configuration
 
 ### Environment Variables
 
-```bash
-# Server
-NODE_ENV=development
+The `.env` file is already configured with default values:
+
+```
 PORT=3000
-
-# JWT
-JWT_SECRET=your-super-secure-jwt-secret
-JWT_EXPIRES_IN=7d
-
-# Client
 CLIENT_URL=http://localhost:5173
-
-# Database (SQLite - automatically managed)
-# Database file will be created at: ./data/booklend.sqlite
+NODE_ENV=development
 ```
 
-### Database Management
+## Development
 
-BookLend uses SQLite with better-sqlite3 for development and production. The database is automatically managed through custom scripts.
+### Starting the API
 
-#### Database Setup Commands
+From the project root:
 
 ```bash
-# Complete database initialization (setup + seed)
-yarn db:init
-
-# Individual commands
-yarn db:setup          # Create database schema
-yarn db:seed           # Populate with development data
-yarn db:debug          # Run database diagnostics
-yarn db:reset          # Delete and recreate database
-
-# Production seeding
-yarn db:seed:prod      # Seed with production-ready data
+yarn api:dev
 ```
 
-#### Database File Location
-
-- **Development**: `./data/booklend.sqlite`
-- **Production**: `./data/booklend.sqlite`
-- **Backups**: Automatically managed by SQLite WAL mode
-
-#### SQLite Optimizations
-
-The database is configured with performance optimizations:
-
-```javascript
-journal_mode = WAL        // Better concurrency
-foreign_keys = ON         // Referential integrity
-synchronous = NORMAL      // Balanced performance
-temp_store = MEMORY       // Faster operations
-mmap_size = 256MB         // Memory-mapped I/O
-```
-
-## Usage Examples
-
-### User Registration
+Or directly in the API folder:
 
 ```bash
-# 1. Send email verification
-curl -X POST http://localhost:3000/api/auth/send-verification \
-  -H "Content-Type: application/json" \
-  -d '{"email": "user@example.com"}'
-
-# 2. Verify token (from email link)
-curl -X POST http://localhost:3000/api/auth/verify-email \
-  -H "Content-Type: application/json" \
-  -d '{"token": "token-from-email"}'
-
-# 3. Complete registration
-curl -X POST http://localhost:3000/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "token": "token-from-email",
-    "firstName": "John",
-    "lastName": "Doe",
-    "password": "password123"
-  }'
+cd apps/api
+yarn dev
 ```
 
-### Login
+### Testing Endpoints
+
+#### Main Health Check
 
 ```bash
-curl -X POST http://localhost:3000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "user@example.com",
-    "password": "password123"
-  }'
+curl http://localhost:3001
 ```
 
-### Create Book (Admin)
+Expected response:
+
+```json
+{
+  "message": "BookLend API is running",
+  "version": "0.0.1",
+  "timestamp": "2025-08-01T00:20:00.000Z"
+}
+```
+
+#### API Health Check
 
 ```bash
-curl -X POST http://localhost:3000/api/books \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer your-jwt-token" \
-  -d '{
-    "title": "Don Quixote",
-    "description": "The adventures of Don Quixote",
-    "pages": 863,
-    "isbn": 9788491050285,
-    "publishedDate": "2024-01-15",
-    "authorId": "author-uuid"
-  }'
+curl http://localhost:3001/api/health
 ```
 
-### Search Books
+Expected response:
+
+```json
+{
+  "success": true,
+  "message": "API is healthy",
+  "timestamp": "2025-08-01T00:20:00.000Z"
+}
+```
+
+#### Book Endpoints
+
+**Get all books:**
 
 ```bash
-# By title
-curl "http://localhost:3000/api/books/search?title=quixote"
-
-# By status
-curl "http://localhost:3000/api/books/search?status=available"
-
-# Popular books
-curl "http://localhost:3000/api/books/popular"
+curl http://localhost:3001/api/books
 ```
 
-## Authentication & Authorization
-
-### JWT Token
-
-```typescript
-// Authorization header required for protected endpoints
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-```
-
-### Auth Middleware
-
-- **`authenticateToken`** - Validates JWT token
-- **`requireAdmin`** - Requires admin role
-- **Rate Limiting** - Protection against spam
-
-### User Roles
-
-- **`USER`** - Standard user (read access)
-- **`ADMIN`** - Administrator (full CRUD)
-
-## Development Data
-
-### Test Credentials
-
-After running `yarn db:init`, you can use these test accounts:
-
-**Admin Account:**
-
-- Email: `admin@test.com`
-- Password: `admin123`
-- Role: Administrator
-- Book Limit: 10 books
-
-**Regular User Account:**
-
-- Email: `user@test.com`
-- Password: `user123`
-- Role: User
-- Book Limit: 3 books
-
-### Sample Data Generated
-
-The development database includes:
-
-- **1 Admin user** and **1 Test user** with known credentials
-- **4 Additional random users** for testing
-- **15 Authors** with realistic biographical data
-- **30 Books** linked to authors with various metadata
-
-## Production Setup
-
-### Production Database Seeding
+**Get popular books:**
 
 ```bash
-yarn db:seed:prod
+curl http://localhost:3001/api/books/popular
 ```
 
-Creates essential data for production:
+#### Author Endpoints
 
-**Admin User:**
-
-- Email: `admin@booklend.com`
-- Password: `Admin@BookLend2024`
-- Role: Administrator
-
-**Essential Authors:**
-
-- Robert Martin (Uncle Bob) - Clean Code series
-- Eric Evans - Domain-Driven Design
-- Martin Fowler - Refactoring, Enterprise Patterns
-- Kent Beck - Test-Driven Development
-- Gang of Four - Design Patterns authors
-
-**Essential Books:**
-
-- Clean Code: A Handbook of Agile Software Craftsmanship
-- Clean Architecture: A Craftsman's Guide to Software Structure
-- Domain-Driven Design: Tackling Complexity in Software
-- Refactoring: Improving the Design of Existing Code
-- Test Driven Development: By Example
-- Design Patterns: Elements of Reusable Object-Oriented Software
-- And more programming classics...
-
-**Security Warning:** Change the default admin password immediately after first login!
-
-## Testing
+**Get all authors:**
 
 ```bash
-# Run tests
-yarn test
-
-# Tests with coverage
-yarn test:coverage
-
-# Tests in watch mode
-yarn test:watch
-
-# Integration tests
-yarn test:integration
+curl http://localhost:3001/api/authors
 ```
 
-### Test Database
-
-Tests use a separate SQLite file to avoid conflicts:
+**Create author (demo):**
 
 ```bash
-# .env.test
-NODE_ENV=test
-DATABASE_PATH=./data/booklend-test.sqlite
+curl -X POST http://localhost:3001/api/authors
 ```
-
-## Database Troubleshooting
-
-### Diagnostic Commands
-
-```bash
-# Check database status and connection
-yarn db:debug
-
-# View database file information
-ls -la ./data/
-
-# Check SQLite installation
-yarn list better-sqlite3
-```
-
-### Common Issues
-
-**Database Connection Errors:**
-
-1. Ensure `./data` directory exists and is writable
-2. Run `yarn db:debug` to check database status
-3. Try `yarn db:reset` to recreate database
-
-**Permission Issues (Windows):**
-
-```bash
-# Create data directory manually
-mkdir data
-# Run with administrator privileges if needed
-```
-
-**Schema Synchronization Issues:**
-
-```bash
-# Force complete reset
-yarn db:reset
-```
-
-### Database Recovery
-
-If database becomes corrupted:
-
-```bash
-# 1. Backup current database
-cp ./data/booklend.sqlite ./data/booklend.backup.sqlite
-
-# 2. Reset database
-yarn db:reset
-
-# 3. Restore data manually if needed
-```
-
-## Logging & Monitoring
-
-### Development Logs
-
-```bash
-# Enable detailed logs
-DEBUG=booklend:* yarn dev
-```
-
-### Health Check
-
-```bash
-# Check API status
-curl http://localhost:3000/api/health
-```
-
-### Available Metrics
-
-- Request/Response times
-- Error rates per endpoint
-- Database query performance
-- Authentication attempts
 
 ## Available Scripts
 
-```bash
-# Development
-yarn dev              # Server with hot reload
-yarn build            # Build for production
-yarn start            # Start built server
+- `yarn dev` - Runs the API in development mode with hot reload
+- `yarn build` - Compiles TypeScript code
+- `yarn start` - Runs the compiled API
+- `yarn test` - Runs tests
+- `yarn type-check` - Verifies TypeScript types
 
-# Database Management
-yarn db:init          # Complete setup (schema + seed)
-yarn db:setup         # Create database schema only
-yarn db:seed          # Development data seeding
-yarn db:seed:prod     # Production data seeding
-yarn db:reset         # Complete database reset
-yarn db:debug         # Database diagnostics
+## Project Structure
 
-# Testing
-yarn test             # Run tests
-yarn test:watch       # Tests in watch mode
-yarn test:coverage    # Tests with coverage
-
-# Code Quality
-yarn lint             # Check code
-yarn lint:fix         # Auto-fix issues
-yarn format           # Format code
+```
+apps/api/
+├── src/
+│   ├── application.ts       # Main application file
+│   ├── express-app.ts       # Express app configuration
+│   ├── server.ts           # Server entry point
+│   ├── constants.ts        # Constants and configuration
+│   ├── config/            # Database and other configurations
+│   ├── controllers/       # API controllers
+│   ├── middlewares/       # Express middlewares
+│   ├── routes/           # Route definitions
+│   ├── services/         # Service implementations
+│   ├── entities/         # TypeORM entities
+│   ├── container/        # Dependency injection
+│   ├── scripts/          # Database management scripts
+│   └── utils/           # Utility functions
+├── data/                 # SQLite database files
+├── .env.example         # Environment variables template
+├── package.json         # Dependencies and scripts
+├── tsconfig.json        # TypeScript configuration
+├── tsconfig.app.json    # Build configuration
+└── README.md           # This file
 ```
 
-## Performance
+## Domain Integration
 
-### SQLite Optimizations Applied
+The API uses a clean domain exports system that allows importing any functionality in an organized way:
 
-- **WAL mode** for better concurrency
-- **Memory-mapped I/O** for faster access
-- **Foreign key constraints** for data integrity
-- **Optimized pragmas** for development use
+```typescript
+import {
+  // ============= ENTITIES =============
+  Book,
+  Author,
+  User,
+  BookStatus,
 
-### Typical Benchmarks
+  // ============= USE CASES =============
+  getPopularBooks,
+  createAuthor,
+  updateAuthor,
+  deleteAuthor,
 
-- **Auth endpoints**: ~30ms
-- **Book CRUD**: ~20ms
-- **Search queries**: ~50ms
-- **Database queries**: ~5-10ms
+  // ============= SERVICES =============
+  BookService,
+  AuthorService,
+  UserService,
 
-### Performance Monitoring
+  // ============= MOCK SERVICES =============
+  mockBookService,
+  mockAuthorService,
+  mockUserService,
 
-The API includes built-in performance monitoring:
+  // ============= TYPES =============
+  UUID,
+  Email,
 
-- Request timing middleware
-- Database query logging in development
-- Error rate tracking
-- Memory usage monitoring
+  // ============= UTILS =============
+  trimOrNull,
+  authorization,
 
-## API Documentation
-
-### Health Endpoint
-
-```bash
-curl http://localhost:3000/api/health
+  // ============= VALIDATIONS =============
+  validateAndNormalizeEmail,
+  validateBirthDeathDates,
+} from 'app-domain';
 ```
 
-Returns server status, database connection info, and system metrics.
+### Benefits of Clean Exports System:
 
-### Swagger Documentation (Planned)
+- ✅ **Single import** for all domain functionality
+- ✅ **Clear organization** by categories
+- ✅ **Complete IntelliSense** in IDE
+- ✅ **Easy maintenance** - no more manual one-by-one exports
+- ✅ **Scalability** - automatically includes new functionalities
 
-Future versions will include OpenAPI/Swagger documentation at `/api/docs`.
+## Next Steps
 
-The API server provides a solid foundation for the BookLend library management system with SQLite for simplicity and performance in development environments.
+1. ✅ ~~Integrate with domain (`app-domain`)~~ - **COMPLETED**
+2. ✅ ~~Add controllers and routes~~ - **COMPLETED**
+3. ✅ ~~Implement authentication middlewares~~ - **COMPLETED**
+4. ✅ ~~Add database integration~~ - **COMPLETED**
+5. Add comprehensive unit tests
+6. Implement email service integration
+7. Add API documentation with Swagger
+8. Implement book lending/returning functionality
+9. Add notification system
+10. Implement advanced search and filtering
