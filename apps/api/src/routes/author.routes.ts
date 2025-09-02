@@ -6,25 +6,19 @@ import {
   authRateLimit,
   adminRateLimit,
 } from '../middlewares/auth.middleware.js';
-
+import { getAuthorDependencies } from '../container/index.js';
 const router: ExpressRouter = Router();
-
+const controller = authorController(getAuthorDependencies());
 router.use(authRateLimit);
 
-router.get('/', authorController.getAllAuthors);
-router.get('/popular', authorController.getPopularAuthors);
-router.get('/search', authorController.searchAuthors);
-router.get('/:id', authorController.getAuthorById);
+router.get('/', controller.getAllAuthors);
+router.get('/popular', controller.getPopularAuthors);
+router.get('/search', controller.searchAuthors);
+router.get('/:id', controller.getAuthorById);
 
-router.post('/', adminRateLimit, authenticateToken, requireAdmin, authorController.createAuthor);
-router.put('/:id', adminRateLimit, authenticateToken, requireAdmin, authorController.updateAuthor);
+router.post('/', adminRateLimit, authenticateToken, requireAdmin, controller.createAuthor);
+router.put('/:id', adminRateLimit, authenticateToken, requireAdmin, controller.updateAuthor);
 
-router.delete(
-  '/:id',
-  adminRateLimit,
-  authenticateToken,
-  requireAdmin,
-  authorController.deleteAuthor
-);
+router.delete('/:id', adminRateLimit, authenticateToken, requireAdmin, controller.deleteAuthor);
 
 export { router as authorRoutes };
