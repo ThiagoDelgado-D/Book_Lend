@@ -107,11 +107,12 @@ API will be available at `http://localhost:3000`
 
 ```
 BookLend/
-│   └── web/                 # Web Frontend App
+│   └── apps/
+|        └── web             # Web Frontend App
+|        └── api             # Rest API
 ├── packages/
 │   ├── domain/              # Domain Layer (Core Business Logic)
 │   ├── api-types/           # Shared API Types
-│   └── ui-components/       # Reusable UI Components
 ├── docs/                    # Detailed Documentation
 ```
 
@@ -324,7 +325,7 @@ We use [Conventional Commits](https://www.conventionalcommits.org/):
 - `test:` Add or modify tests
 - `chore:` Maintenance tasks
 
-## 📄 License
+## License
 
 This project is under the MIT License. See [LICENSE](LICENSE) for more details.
 
