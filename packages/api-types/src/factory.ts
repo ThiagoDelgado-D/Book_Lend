@@ -7,8 +7,8 @@ import {
   UserProfileResponse,
   VerifyEmailTokenResponse,
 } from './auth/auth';
-import { AuthorResponse, AuthorsListResponse } from './author/author';
-import { BookResponse, BooksListResponse } from './books/book';
+import { AuthorResponse, AuthorsListResponse } from './author';
+import { BookResponse, BooksListResponse } from './books';
 
 export class ApiResponseFactory {
   static success<T>(data: T, message = 'Operation successful'): ApiResponse<T> {

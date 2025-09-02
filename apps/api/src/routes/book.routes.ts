@@ -6,18 +6,20 @@ import {
   authRateLimit,
   adminRateLimit,
 } from '../middlewares/auth.middleware.js';
+import { getBookDependencies } from '../container/index.js';
 
 const router: ExpressRouter = Router();
+const controller = bookController(getBookDependencies());
 
 router.use(authRateLimit);
 
-router.get('/', bookController.getAllBooks);
-router.get('/popular', bookController.getPopularBooks);
-router.get('/search', bookController.searchBooks);
-router.get('/:id', bookController.getBookById);
+router.get('/', controller.getAllBooks);
+router.get('/popular', controller.getPopularBooks);
+router.get('/search', controller.searchBooks);
+router.get('/:id', controller.getBookById);
 
-router.post('/', adminRateLimit, authenticateToken, requireAdmin, bookController.createBook);
-router.put('/:id', adminRateLimit, authenticateToken, requireAdmin, bookController.updateBook);
-router.delete('/:id', adminRateLimit, authenticateToken, requireAdmin, bookController.deleteBook);
+router.post('/', adminRateLimit, authenticateToken, requireAdmin, controller.createBook);
+router.put('/:id', adminRateLimit, authenticateToken, requireAdmin, controller.updateBook);
+router.delete('/:id', adminRateLimit, authenticateToken, requireAdmin, controller.deleteBook);
 
 export { router as bookRoutes };

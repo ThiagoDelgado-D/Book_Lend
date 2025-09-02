@@ -19,3 +19,7 @@ export interface Book extends Entity {
   isPopular: boolean;
   entryDate: Date;
 }
+
+export function isValidBookStatus(status: string): status is BookStatus {
+  return Object.values(BookStatus).includes(status as BookStatus);
+}
