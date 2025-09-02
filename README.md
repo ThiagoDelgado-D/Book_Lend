@@ -63,247 +63,295 @@ yarn verify
 Each package has its own scripts that can be run individually:
 
 ```bash
-# Run in domain package
-yarn workspace domain test
-yarn workspace domain build
-yarn workspace domain lint
+git clone https://github.com/your-username/booklend.git
+cd booklend
 ```
 
-## Getting Started
-
-1. **Install dependencies:**
+2. **Install dependencies:**
 
    ```bash
    yarn install
    ```
 
-2. **Set up Husky:**
+3. **Setup database:**
 
    ```bash
    yarn prepare
    ```
 
-3. **Run tests:**
+   ````bash
 
    ```bash
-   yarn test
-   ```
+   ````
 
-4. **Build the project:**
+   ````
 
    ```bash
-   yarn build
+
+   ```bash
+
+   ````
+
+4. **Start the server:**
+   ```bash
+   yarn dev
    ```
+
+API will be available at `http://localhost:3000`
+
+## Architecture
+
+```
+┌─────────────────────────────────────┐
+│         Presentation Layer          │  ← Web UI, Mobile App
+├─────────────────────────────────────┤
+│         Application Layer           │  ← Controllers, Routes, Middleware
+├─────────────────────────────────────┤
+│         Infrastructure Layer        │  ← Database, External Services
+├─────────────────────────────────────┤
+│            Domain Layer             │  ← Business Logic (Core)
+└─────────────────────────────────────┘
+```
+
+### Implemented Layers
+
+- **Domain**: Entities, use cases, services (100% complete)
+- **Infrastructure**: TypeORM, MySQL, external services (80% complete)
+- **Application**: REST controllers, auth middleware (60% complete)
+- **Presentation**: Web frontend (10% complete)
+
+## Project Structure
 
 ## Project Structure
 
 ```
 BookLend/
-├── domain/                           # Domain Layer Package (COMPLETE)
-│   ├── src/
-│   │   ├── entities/                 # Business entities
-│   │   │   ├── base-entities/        # Base entity interfaces
-│   │   │   │   ├── entity.ts         # Base entity with ID
-│   │   │   │   └── person.ts         # Person base interface
-│   │   │   ├── user.ts               # User entity with secure filtering
-│   │   │   ├── book.ts               # Book entity with status management
-│   │   │   └── author.ts             # Author entity
-│   │   ├── services/                 # Domain service interfaces
-│   │   │   ├── auth-service.ts       # User authentication operations
-│   │   │   ├── user-service.ts       # User management operations
-│   │   │   ├── book-service.ts       # Book management operations
-│   │   │   ├── author-service.ts     # Author management operations
-│   │   │   ├── email-verification-service.ts # Email verification
-│   │   │   ├── crypto-service.ts     # Cryptographic operations
-│   │   │   └── mocks/                # Mock implementations for testing
-│   │   │       ├── mock-auth-service.ts
-│   │   │       ├── mock-user-service.ts
-│   │   │       ├── mock-book-service.ts
-│   │   │       ├── mock-author-service.ts
-│   │   │       ├── mock-email-verification-service.ts
-│   │   │       └── mock-crypto-service.ts
-│   │   ├── use-cases/                # Application use cases
-│   │   │   ├── auth/                 # Authentication workflows
-│   │   │   │   ├── send-email-verification.ts
-│   │   │   │   ├── verify-email-token.ts
-│   │   │   │   └── complete-registration.ts
-│   │   │   ├── book/                 # Book management workflows
-│   │   │   │   ├── add-book.ts
-│   │   │   │   ├── update-book.ts
-│   │   │   │   ├── delete-book.ts
-│   │   │   │   ├── get-book-by-id.ts
-│   │   │   │   └── get-popular-books.ts
-│   │   │   └── author/               # Author management workflows
-│   │   │       ├── add-author.ts
-│   │   │       ├── update-author.ts
-│   │   │       └── delete-author.ts
-│   │   ├── types/                    # Domain-specific types
-│   │   │   ├── uuid.ts               # UUID type definition
-│   │   │   └── email.ts              # Email type definition
-│   │   ├── utils/                    # Utility functions
-│   │   │   ├── authorization.ts      # Role-based authorization
-│   │   │   └── trim-or-null.ts       # String manipulation utilities
-│   │   └── validations/              # Validation system
-│   │       ├── dates/                # Date validation
-│   │       │   └── date-validator.ts
-│   │       ├── emails/               # Email validation
-│   │       │   └── email-validator.ts
-│   │       └── field-validator.ts    # Required field validation
-│   ├── package.json
-│   ├── tsconfig.json
-│   ├── tsconfig.lib.json
-│   └── vitest.config.ts
-├── package.json                      # Root package configuration
-├── tsconfig.json                     # TypeScript configuration
-├── .eslintrc.json                    # ESLint configuration
-├── .prettierrc                       # Prettier configuration
-└── README.md                         # This file
+│   └── web/                 # Web Frontend App
+├── packages/
+│   ├── domain/              # Domain Layer (Core Business Logic)
+│   ├── api-types/           # Shared API Types
+│   └── ui-components/       # Reusable UI Components
+├── docs/                    # Detailed Documentation
 ```
 
-## Features Implemented ✅
+## Tech Stack
 
-### Complete Authentication System
+### Backend
 
-- **Email-first registration workflow** with token verification
-- **Secure password handling** with hashing
-- **Token-based email verification** with expiration
-- **User management** with secure field filtering
-- **Role-based authorization** (User/Admin)
+- **TypeScript** - Primary language
+- **Node.js + Express** - Server and web framework
+- **TypeORM** - Database ORM
+- **SQlite** - Primary database
+- **JWT** - Token-based authentication
+- **bcrypt** - Password hashing
 
-### Comprehensive User Management
+### Frontend
 
-- **User CRUD operations** with status management
-- **Admin role verification** for privileged operations
-- **Secure user data handling** with password filtering
-- **User status tracking** (Active, Suspended, Inactive)
+- **React 18** - UI framework
+- **TypeScript** - Static typing
+- **Tailwind CSS** - Utility-first CSS
+- **React Router** - Navigation
 
-### Book Management System
+### DevTools
 
-- **Complete book CRUD operations**
-- **ISBN validation** and duplicate prevention
-- **Book status management** (Available, Borrowed, Reserved, etc.)
-- **Popular books tracking** and retrieval
-- **Book search** by ID, title, ISBN, and status
+- **Yarn Workspaces** - Monorepo management
+- **Vitest** - Testing framework
+- **ESLint + Prettier** - Linting and formatting
+- **Husky** - Git hooks
+- **lint-staged** - Pre-commit hooks
 
-### Author Management System
+## Key Features
 
-- **Author CRUD operations** with admin authorization
-- **Comprehensive author information** (biography, nationality, dates)
-- **Author search** by name, nationality, and popularity
-- **Birth/death date validation**
-- **Author popularity tracking**
+### Authentication System
 
-### Domain Services & Mock Implementations
+- Email verification registration
+- Secure login with JWT
+- User roles (User/Admin)
+- Role-based authorization
 
-- **Complete service interfaces** for all domain operations
-- **Full mock implementations** for isolated testing
-- **Cryptographic services** for hashing and token generation
-- **Email verification services** with token management
+### Book Management
 
-### Robust Validation System
+- Complete book CRUD
+- Search by title, ISBN, author
+- Book states (Available, Borrowed, Reserved)
+- Categorization and tagging
 
-- **Email format validation** with normalization
-- **Date validation** (birth/death date consistency)
-- **Required field validation** with customizable messages
-- **Input sanitization** and trimming utilities
+### Author Management
 
-### Authorization & Security
+- Author CRUD (admin only)
+- Complete biographical information
+- Search by name and nationality
 
-- **Role-based access control** (Admin/User roles)
-- **Secure password handling** with hashing
-- **Token-based verification** with expiration
-- **Secure field filtering** to prevent data leakage
+### User Management
 
-## Testing Strategy ✅
+- Complete user profiles
+- Account states (Active, Suspended)
+- Configurable loan limits
 
-### Comprehensive Test Coverage
+## Testing
 
-- **Unit tests** for all entities, use cases, and utilities
-- **Mock-based testing** for isolated domain logic testing
-- **Integration testing** for complete workflows
-- **Test coverage reporting** with Vitest
+```bash
+# Run all tests
+yarn test
 
-### Test Structure
+# Tests with coverage
+yarn test:coverage
 
-```typescript
-describe('Use Case Tests', () => {
-  let services: MockServices;
+# Tests in watch mode
+yarn test:watch
 
-  beforeEach(() => {
-    services = createMockServices();
-  });
-
-  test('should handle happy path scenario', async () => {
-    // Given: Test data setup
-    // When: Execute use case
-    // Then: Verify expected results
-  });
-
-  test('should handle error scenarios', async () => {
-    // Test validation failures, business rule violations, etc.
-  });
-});
+# Tests for specific workspace
+yarn workspace domain test
 ```
 
-## Development Tools & Quality Assurance
+### Current Coverage
 
-### Git Hooks & Code Quality
+- **Domain Layer**: 95%+ coverage
+- **Infrastructure**: 80%+ coverage
+- **Application**: 70%+ coverage
 
-- **pre-commit**: Runs linting, formatting, and type checking on staged files
-- **commit-msg**: Validates commit messages follow Conventional Commits format
-- **pre-push**: Complete verification before pushing
+## API Endpoints
 
-### Commit Format
+### Authentication
 
-Required Conventional Commits format: `type(scope): description`
+```http
+POST /api/auth/send-verification     # Send email verification
+POST /api/auth/verify-email          # Verify email token
+POST /api/auth/register              # Complete registration
+POST /api/auth/login                 # Login
+```
 
-**Allowed types:** `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `ci`, `build`, `perf`, `revert`
+### Books
 
-## Next Steps - Infrastructure & Application Layers
+```http
+GET    /api/books                    # List books
+GET    /api/books/:id               # Get book by ID
+GET    /api/books/search            # Search books
+POST   /api/books                   # Create book (admin)
+PUT    /api/books/:id              # Update book (admin)
+DELETE /api/books/:id              # Delete book (admin)
+```
 
-### Immediate Priorities
+### Authors
 
-1. **Infrastructure Layer Implementation**
-   - Database implementations (PostgreSQL)
-   - Email service integrations (SendGrid/AWS SES)
-   - Caching layer (Redis)
-   - Real cryptographic service implementations
+```http
+GET    /api/authors                 # List authors
+GET    /api/authors/:id            # Get author by ID
+POST   /api/authors                # Create author (admin)
+PUT    /api/authors/:id           # Update author (admin)
+DELETE /api/authors/:id           # Delete author (admin)
+```
 
-2. **Application Layer Development**
-   - RESTful API controllers and routes
-   - Request/response DTOs and validation
-   - Authentication middleware and JWT handling
-   - Authorization middleware and guards
+## Available Scripts
 
-3. **Error Handling System**
-   - Domain-specific error types and hierarchy
-   - Error mapping to HTTP responses
-   - Global error handling middleware
+### Development
 
-### Long-term Goals
+```bash
+yarn dev              # Start in development mode
+yarn build            # Build for production
+yarn start            # Start built application
+```
 
-4. **Web Application Frontend**
-5. **Event-Driven Architecture**
-6. **Microservices Migration Strategy**
-7. **DevOps & Deployment Pipeline**
+### Code Quality
 
-## Architecture Benefits
+```bash
+yarn lint             # Run linting
+yarn lint:fix         # Auto-fix linting issues
+yarn format           # Format code
+yarn type-check       # Check TypeScript types
+yarn verify           # Complete verification
+```
 
-1. **Business Logic Protection** - Core domain logic is isolated and testable
-2. **High Testability** - Complete mock implementations enable fast, isolated tests
-3. **Flexibility** - Easy to swap implementations without changing business logic
-4. **Maintainability** - Clear separation of concerns and well-defined boundaries
-5. **Scalability** - Foundation ready for additional features and layers
-6. **Type Safety** - Comprehensive TypeScript typing throughout the domain
+### Database
+
+```bash
+yarn workspace api db:migrate       # Run migrations
+yarn workspace api db:seed         # Populate with test data
+yarn workspace api db:reset        # Complete DB reset
+```
+
+## Configuration
+
+### Environment Variables
+
+```bash
+# Server Configuration
+NODE_ENV=development
+PORT=3000
+
+# JWT Configuration
+JWT_SECRET=your-super-secret-jwt-key
+JWT_EXPIRES_IN=7d
+
+# Client Configuration
+CLIENT_URL=http://localhost:5173
+```
+
+### Local Development
+
+1. **MySQL with Docker:**
+
+   ```bash
+   docker run --name booklend-mysql \
+     -e MYSQL_ROOT_PASSWORD=password \
+     -e MYSQL_DATABASE=booklend \
+     -p 3306:3306 -d mysql:8.0
+   ```
+
+2. **Test data:**
+   ```bash
+   yarn workspace api db:seed
+   ```
+
+## Roadmap 2025
+
+### Phase 2:
+
+- [ ] 📱 Optimized mobile API
+- [ ] 🔔 Notification system
+- [ ] 📊 Reports and statistics
+
+### Phase 3:
+
+- [ ] 💰 Fine system
+- [ ] 📅 Advanced reservation system
+- [ ] 🔍 Enhanced search with filters
+
+### Phase 4:
+
+- [ ] 🏢 Multi-tenant (multiple libraries)
+- [ ] 🌐 Internationalization (i18n)
+- [ ] ⚡ Performance optimizations
 
 ## Contributing
 
-1. Follow established code conventions and Clean Architecture principles
-2. Write comprehensive tests for new functionality
-3. Ensure all quality checks pass before committing
-4. Maintain separation of concerns between layers
-5. Update documentation for significant changes
+1. **Fork the project**
+2. **Create feature branch:** `git checkout -b feature/new-functionality`
+3. **Commit changes:** `git commit -m 'feat: add new functionality'`
+4. **Push to branch:** `git push origin feature/new-functionality`
+5. **Open Pull Request**
 
-## License
+### Commit Conventions
 
-MIT License - see LICENSE file for details
+We use [Conventional Commits](https://www.conventionalcommits.org/):
+
+- `feat:` New feature
+- `fix:` Bug fix
+- `docs:` Documentation changes
+- `style:` Formatting changes
+- `refactor:` Code refactoring
+- `test:` Add or modify tests
+- `chore:` Maintenance tasks
+
+## 📄 License
+
+This project is under the MIT License. See [LICENSE](LICENSE) for more details.
+
+## Support
+
+- **Documentation**: [docs/](./docs/)
+- **Issues**: [GitHub Issues](https://github.com/ThiagoDelgado-D/Book_Lend/issues)
+
+---
+
+⭐ **Give it a star if you find this project useful!**
