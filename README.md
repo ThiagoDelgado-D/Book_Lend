@@ -63,7 +63,7 @@ yarn verify
 Each package has its own scripts that can be run individually:
 
 ```bash
-git clone https://github.com/your-username/booklend.git
+git clone https://github.com/ThiagoDelgado-D/Book_Lend
 cd booklend
 ```
 
