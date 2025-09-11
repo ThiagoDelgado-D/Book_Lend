@@ -1,14 +1,20 @@
+import { DashboardSection } from '../components/home/dashboard-section';
 import { HeroSection } from '../components/home/hero-section';
-import { StatsSection } from '../components/home/stats-section';
-import { CategoriesGrid } from '../components/home/categories-grid';
 import { MainLayout } from '../layouts/main-layout';
 
-export default function HomePage() {
+const Index = () => {
   return (
     <MainLayout>
-      <HeroSection />
-      <StatsSection />
-      <CategoriesGrid />
+      <main>
+        <HeroSection />
+        <section className="py-16">
+          <div className="container">
+            <DashboardSection />
+          </div>
+        </section>
+      </main>
     </MainLayout>
   );
-}
+};
+
+export default Index;

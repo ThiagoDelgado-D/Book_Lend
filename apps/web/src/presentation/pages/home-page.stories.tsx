@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import HomePage from '.';
+import { MemoryRouter } from 'react-router-dom';
 
 const meta: Meta<typeof HomePage> = {
   title: 'Pages/HomePage',
@@ -7,6 +8,13 @@ const meta: Meta<typeof HomePage> = {
   parameters: {
     layout: 'fullscreen',
   },
+  decorators: [
+    Story => (
+      <MemoryRouter>
+        <Story />
+      </MemoryRouter>
+    ),
+  ],
   tags: ['autodocs'],
 };
 
