@@ -788,6 +788,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mjackson/form-data-parser@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@mjackson/form-data-parser@npm:0.4.0"
+  dependencies:
+    "@mjackson/multipart-parser": "npm:^0.6.1"
+  checksum: 10c0/044f255162301b033688aa5cf7af84fed197fe11592c070d874f90f2848d7f082cd2cf53068ccd4e2f9485a6cbb46cfe60c2aa1f1082f84ff36df0325be1b3f9
+  languageName: node
+  linkType: hard
+
+"@mjackson/headers@npm:^0.5.0":
+  version: 0.5.1
+  resolution: "@mjackson/headers@npm:0.5.1"
+  checksum: 10c0/f235188ec7c2b0937c9d5c24f9872ff8244f95a64cb3c4c3ee7da866c2247af6d8397782fd2aeb3960b17e708fb40d77884b5bf3268b13127b9f53656b1664e9
+  languageName: node
+  linkType: hard
+
+"@mjackson/multipart-parser@npm:^0.6.1":
+  version: 0.6.3
+  resolution: "@mjackson/multipart-parser@npm:0.6.3"
+  dependencies:
+    "@mjackson/headers": "npm:^0.5.0"
+  checksum: 10c0/00555916127b62c4a47be3f818cc9e45b55ba78203e106ff645ef5aef0460c338f4cdf2e7c129fa1fd1eee95321a2a5db6770c082c8969ca63eb8ecb3d1dd30e
+  languageName: node
+  linkType: hard
+
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -3118,6 +3143,13 @@ __metadata:
   version: 4.1.1
   resolution: "commander@npm:4.1.1"
   checksum: 10c0/84a76c08fe6cc08c9c93f62ac573d2907d8e79138999312c92d4155bc2325d487d64d13f669b2000c9f8caf70493c1be2dac74fec3c51d5a04f8bc3ae1830bab
+  languageName: node
+  linkType: hard
+
+"compare-versions@npm:^6.0.0":
+  version: 6.1.1
+  resolution: "compare-versions@npm:6.1.1"
+  checksum: 10c0/415205c7627f9e4f358f571266422980c9fe2d99086be0c9a48008ef7c771f32b0fbe8e97a441ffedc3910872f917a0675fe0fe3c3b6d331cda6d8690be06338
   languageName: node
   linkType: hard
 
@@ -7146,6 +7178,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-inspector@npm:6.0.2":
+  version: 6.0.2
+  resolution: "react-inspector@npm:6.0.2"
+  peerDependencies:
+    react: ^16.8.4 || ^17.0.0 || ^18.0.0
+  checksum: 10c0/8f9b23c21b4d95722e28c9455c2bf00fd9437347714382594461f98e5b9954d60864d0f4e74e881639b065e752a97ba52a65e39930c234072e5bff291bb02b5e
+  languageName: node
+  linkType: hard
+
 "react-is@npm:^16.13.1":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
@@ -7984,6 +8025,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"storybook-addon-remix-react-router@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "storybook-addon-remix-react-router@npm:5.0.0"
+  dependencies:
+    "@mjackson/form-data-parser": "npm:^0.4.0"
+    compare-versions: "npm:^6.0.0"
+    react-inspector: "npm:6.0.2"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-router: ^7.0.2
+    storybook: ^9.0.0
+  peerDependenciesMeta:
+    react:
+      optional: true
+    react-dom:
+      optional: true
+  checksum: 10c0/5316b370f9b97edfd07259edeb87cec230d044f215bc35eb40a1a44dcb82a39ffd8e116243f2fb4772077a38d0244f4ae94cbfbc6e518ca6450c7e76c9e1e2cb
+  languageName: node
+  linkType: hard
+
 "storybook@npm:^8.5.8":
   version: 8.6.14
   resolution: "storybook@npm:8.6.14"
@@ -8242,6 +8304,15 @@ __metadata:
   dependencies:
     "@pkgr/core": "npm:^0.2.9"
   checksum: 10c0/f0761495953d12d94a86edf6326b3a565496c72f9b94c02549b6961fb4d999f4ca316ce6b3eb8ed2e4bfc5056a8de65cda0bd03a233333a35221cd2fdc0e196b
+  languageName: node
+  linkType: hard
+
+"tailwindcss-animate@npm:^1.0.7":
+  version: 1.0.7
+  resolution: "tailwindcss-animate@npm:1.0.7"
+  peerDependencies:
+    tailwindcss: "*"
+  checksum: 10c0/ec7dbd1631076b97d66a1fbaaa06e0725fccfa63119221e8d87a997b02dcede98ad88bb1ef6665b968f5d260fcefb10592e0299ca70208d365b37761edf5e19a
   languageName: node
   linkType: hard
 
@@ -9021,7 +9092,9 @@ __metadata:
     react-dom: "npm:^18.3.1"
     react-router-dom: "npm:^7.8.2"
     storybook: "npm:^8.5.8"
+    storybook-addon-remix-react-router: "npm:^5.0.0"
     tailwindcss: "npm:^3.4.14"
+    tailwindcss-animate: "npm:^1.0.7"
     tsx: "npm:^4.19.2"
     typescript: "npm:^5.6.3"
     vite: "npm:^5.4.10"
