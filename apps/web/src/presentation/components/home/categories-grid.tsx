@@ -19,16 +19,18 @@ interface Category {
 
 const CategoryCard = ({ category }: { category: Category }) => (
   <div className="group cursor-pointer">
-    <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-gray-200 h-full">
+    <div className="bg-card rounded-2xl p-6 shadow-soft hover:shadow-medium transition-all duration-300 border border-border hover:border-border/70 h-full">
       <div
         className={`inline-flex items-center justify-center w-12 h-12 rounded-xl ${category.gradient} mb-4 group-hover:scale-110 transition-transform duration-300`}
       >
         {category.icon}
       </div>
-      <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">
+      <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-emerald-700 transition-colors">
         {category.name}
       </h3>
-      <p className="text-sm text-gray-500 font-medium">{category.count} libros disponibles</p>
+      <p className="text-sm text-muted-foreground font-medium">
+        {category.count} libros disponibles
+      </p>
     </div>
   </div>
 );
@@ -86,13 +88,13 @@ export const CategoriesGrid = () => {
   ];
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-background">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-light text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-light text-foreground mb-4">
             Explora por categorías
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto font-light">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-light">
             Descubre una amplia variedad de libros organizados por temas de tu interés
           </p>
         </div>

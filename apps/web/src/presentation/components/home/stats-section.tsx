@@ -10,14 +10,14 @@ interface StatItemProps {
 
 const StatItem = ({ icon, value, label, gradient }: StatItemProps) => (
   <div className="group">
-    <div className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-gray-200">
+    <div className="bg-card rounded-2xl p-8 shadow-soft hover:shadow-medium transition-all duration-300 border border-border hover:border-border/70">
       <div
         className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl ${gradient} mb-6 group-hover:scale-110 transition-transform duration-300`}
       >
         {icon}
       </div>
-      <div className="text-4xl font-light text-gray-900 mb-2">{value}</div>
-      <div className="text-gray-600 font-medium">{label}</div>
+      <div className="text-4xl font-light text-foreground mb-2">{value}</div>
+      <div className="text-muted-foreground font-medium">{label}</div>
     </div>
   </div>
 );
@@ -45,13 +45,13 @@ export const StatsSection = () => {
   ];
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-muted/30">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-light text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-light text-foreground mb-4">
             Nuestra biblioteca en números
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto font-light">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-light">
             Descubre por qué somos la opción preferida para gestión de bibliotecas
           </p>
         </div>
