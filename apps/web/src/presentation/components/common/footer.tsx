@@ -1,5 +1,3 @@
-import { BookOpen } from 'lucide-react';
-
 interface FooterLink {
   label: string;
   href: string;
@@ -51,17 +49,17 @@ export const Footer = ({ onLinkClick }: FooterProps) => {
   };
 
   return (
-    <footer className="border-t border-gray-200 bg-white py-12 mt-16">
-      <div className="container mx-auto px-6">
+    <footer className="border-t border-border/50 py-12 mt-16">
+      <div className="container">
         <div className="grid md:grid-cols-4 gap-8">
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-r from-emerald-600 to-emerald-500 flex items-center justify-center">
-                <BookOpen className="h-5 w-5 text-white" />
+              <div className="h-8 w-8 rounded-lg bg-gradient-hero flex items-center justify-center">
+                <span className="text-white font-bold text-sm">BL</span>
               </div>
-              <span className="font-bold text-xl text-gray-900">BookLend</span>
+              <span className="font-bold text-xl text-foreground">BookLend</span>
             </div>
-            <p className="text-sm text-gray-600 leading-relaxed">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               Tu biblioteca digital moderna para gestionar préstamos y descubrir nuevos libros.
             </p>
           </div>
@@ -74,7 +72,7 @@ export const Footer = ({ onLinkClick }: FooterProps) => {
                   <button
                     key={linkIndex}
                     onClick={() => handleLinkClick(link.href)}
-                    className="block text-sm text-gray-600 hover:text-emerald-600 cursor-pointer transition-colors text-left"
+                    className="block text-sm text-gray-600 text-left hover:text-accent cursor-pointer transition-colors"
                   >
                     {link.label}
                   </button>
@@ -83,9 +81,8 @@ export const Footer = ({ onLinkClick }: FooterProps) => {
             </div>
           ))}
         </div>
-
-        <div className="mt-8 pt-8 border-t border-gray-200 text-center text-sm text-gray-600">
-          <p>&copy; 2025 BookLend. Desarrollado con ❤️ para amantes de los libros.</p>
+        <div className="mt-8 pt-8 border-t border-border/30 text-center text-sm text-muted-foreground">
+          <p>&copy; 2024 BookLend. Desarrollado con ❤️ para amantes de los libros.</p>
         </div>
       </div>
     </footer>
