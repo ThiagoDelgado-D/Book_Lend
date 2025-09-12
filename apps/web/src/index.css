@@ -1,68 +1,151 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer base {
+    :root {
+        /* Library-inspired warm palette */
+        --background: 42 15% 97%;
+        --foreground: 25 20% 15%;
+
+        --card: 42 25% 96%;
+        --card-foreground: 25 20% 15%;
+
+        --popover: 42 25% 96%;
+        --popover-foreground: 25 20% 15%;
+
+        /* Rich brown primary - like leather-bound books */
+        --primary: 25 35% 25%;
+        --primary-foreground: 42 15% 97%;
+
+        /* Warm secondary - like parchment */
+        --secondary: 42 25% 90%;
+        --secondary-foreground: 25 35% 25%;
+
+        /* Soft muted tones */
+        --muted: 42 20% 92%;
+        --muted-foreground: 25 15% 45%;
+
+        /* Golden accent - like gilded book edges */
+        --accent: 45 60% 70%;
+        --accent-foreground: 25 35% 25%;
+
+        /* Warm destructive */
+        --destructive: 0 70% 55%;
+        --destructive-foreground: 42 15% 97%;
+
+        /* Subtle borders */
+        --border: 42 20% 85%;
+        --input: 42 20% 85%;
+        --ring: 45 60% 70%;
+
+        --radius: 0.75rem;
+
+        /* Custom library tokens */
+        --library-green: 145 40% 45%;
+        --library-green-light: 145 30% 85%;
+        --vintage-gold: 45 85% 60%;
+        --warm-beige: 42 30% 88%;
+        --deep-brown: 25 45% 20%;
+
+        /* Gradients */
+        --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--library-green)) 100%);
+        --gradient-card: linear-gradient(180deg, hsl(var(--card)) 0%, hsl(var(--warm-beige)) 100%);
+        --gradient-accent: linear-gradient(45deg, hsl(var(--vintage-gold)) 0%, hsl(var(--accent)) 100%);
+
+        /* Shadows */
+        --shadow-soft: 0 2px 10px hsl(var(--primary) / 0.1);
+        --shadow-medium: 0 4px 20px hsl(var(--primary) / 0.15);
+        --shadow-strong: 0 8px 30px hsl(var(--primary) / 0.2);
+
+        /* Transitions */
+        --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+        --sidebar-background: 0 0% 98%;
+
+        --sidebar-foreground: 240 5.3% 26.1%;
+
+        --sidebar-primary: 240 5.9% 10%;
+
+        --sidebar-primary-foreground: 0 0% 98%;
+
+        --sidebar-accent: 240 4.8% 95.9%;
+
+        --sidebar-accent-foreground: 240 5.9% 10%;
+
+        --sidebar-border: 220 13% 91%;
+
+        --sidebar-ring: 217.2 91.2% 59.8%;
+    }
+
+    .dark {
+        /* Dark library theme - cozy evening reading */
+        --background: 25 25% 8%;
+        --foreground: 42 15% 95%;
+
+        --card: 25 20% 12%;
+        --card-foreground: 42 15% 95%;
+
+        --popover: 25 20% 12%;
+        --popover-foreground: 42 15% 95%;
+
+        --primary: 42 25% 85%;
+        --primary-foreground: 25 25% 8%;
+
+        --secondary: 25 15% 18%;
+        --secondary-foreground: 42 15% 95%;
+
+        --muted: 25 15% 18%;
+        --muted-foreground: 42 10% 65%;
+
+        --accent: 45 60% 65%;
+        --accent-foreground: 25 25% 8%;
+
+        --destructive: 0 60% 50%;
+        --destructive-foreground: 42 15% 95%;
+
+        --border: 25 15% 22%;
+        --input: 25 15% 22%;
+        --ring: 45 60% 65%;
+
+        /* Dark custom tokens */
+        --library-green: 145 35% 55%;
+        --library-green-light: 145 25% 25%;
+        --vintage-gold: 45 70% 65%;
+        --warm-beige: 42 15% 15%;
+        --deep-brown: 25 30% 10%;
+
+        /* Dark gradients */
+        --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--library-green)) 100%);
+        --gradient-card: linear-gradient(180deg, hsl(var(--card)) 0%, hsl(var(--warm-beige)) 100%);
+        --gradient-accent: linear-gradient(45deg, hsl(var(--vintage-gold)) 0%, hsl(var(--accent)) 100%);
+
+        /* Dark shadows */
+        --shadow-soft: 0 2px 10px hsl(0 0% 0% / 0.3);
+        --shadow-medium: 0 4px 20px hsl(0 0% 0% / 0.4);
+        --shadow-strong: 0 8px 30px hsl(0 0% 0% / 0.5);
+        --sidebar-background: 240 5.9% 10%;
+        --sidebar-foreground: 240 4.8% 95.9%;
+        --sidebar-primary: 224.3 76.3% 48%;
+        --sidebar-primary-foreground: 0 0% 100%;
+        --sidebar-accent: 240 3.7% 15.9%;
+        --sidebar-accent-foreground: 240 4.8% 95.9%;
+        --sidebar-border: 240 3.7% 15.9%;
+        --sidebar-ring: 217.2 91.2% 59.8%;
+    }
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
+@layer base {
+    * {
+        @apply border-border;
+    }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+    body {
+        @apply bg-background text-foreground;
+    }
 }
