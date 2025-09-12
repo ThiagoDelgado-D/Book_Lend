@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { StatsCard } from './stats-card';
+import { StatCard } from './stats-card';
 
-const meta: Meta<typeof StatsCard> = {
-  title: 'Components/Cards/StatsCard',
-  component: StatsCard,
+const meta: Meta<typeof StatCard> = {
+  title: 'Components/Cards/StatCard',
+  component: StatCard,
   parameters: {
     layout: 'centered',
   },

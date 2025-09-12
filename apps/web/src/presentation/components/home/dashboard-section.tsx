@@ -4,16 +4,10 @@ import { BookCard, FeaturedBook } from '../cards/book-card';
 import { StatCard } from '../cards/stats-card';
 
 interface DashboardSectionProps {
-  onRequestLoan?: (bookId: string) => void;
-  onViewDetails?: (bookId: string) => void;
   onViewAllBooks?: () => void;
 }
 
-export const DashboardSection = ({
-  onRequestLoan,
-  onViewDetails,
-  onViewAllBooks,
-}: DashboardSectionProps) => {
+export const DashboardSection = ({ onViewAllBooks }: DashboardSectionProps) => {
   const stats = [
     {
       title: 'Libros Disponibles',
@@ -127,12 +121,7 @@ export const DashboardSection = ({
 
             <div className="grid gap-6">
               {featuredBooks.map(book => (
-                <BookCard
-                  key={book.id}
-                  book={book}
-                  onRequestLoan={onRequestLoan}
-                  onViewDetails={onViewDetails}
-                />
+                <BookCard key={book.id} book={book} />
               ))}
             </div>
           </div>

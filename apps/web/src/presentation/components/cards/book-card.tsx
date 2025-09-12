@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../ui/button';
 import { Badge } from '../../ui/badge';
+import { BookStatus } from 'app-domain';
 
 interface BookCardProps {
   book: {
@@ -10,13 +11,24 @@ interface BookCardProps {
     title: string;
     author: string;
     isbn: string;
-    status: 'available' | 'borrowed' | 'reserved';
+    status: BookStatus.AVAILABLE | BookStatus.BORROWED | BookStatus.RESERVED;
     rating: number;
     genre: string;
     description: string;
     coverUrl?: string;
     publishedYear: number;
   };
+}
+export interface FeaturedBook {
+  id: string;
+  title: string;
+  author: string;
+  isbn: string;
+  status: BookStatus.AVAILABLE | BookStatus.BORROWED | BookStatus.RESERVED;
+  rating: number;
+  genre: string;
+  description: string;
+  publishedYear: number;
 }
 
 export const BookCard = ({ book }: BookCardProps) => {
@@ -36,7 +48,7 @@ export const BookCard = ({ book }: BookCardProps) => {
     }
   };
 
-  const getStatusText = (status: string) => {
+  const getStatusText = (status: BookStatus) => {
     switch (status) {
       case 'available':
         return 'Disponible';
